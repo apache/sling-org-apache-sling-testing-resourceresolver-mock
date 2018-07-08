@@ -26,6 +26,7 @@ import java.util.Stack;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.service.event.EventAdmin;
 
 
@@ -119,7 +120,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
      * Make sure to remove it from the current thread context.
      * @param resolver Resource resolver
      */
-    public void closed(final ResourceResolver resolver) {
+    public void closed(@NotNull final ResourceResolver resolver) {
         final Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
         if ( resolverStack != null ) {
             resolverStack.remove(resolver);

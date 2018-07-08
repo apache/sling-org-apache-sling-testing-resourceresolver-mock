@@ -26,6 +26,8 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class to create resources:
@@ -52,7 +54,7 @@ public class MockHelper {
      * @param resolver Resource resolver
      * @return this
      */
-    public static MockHelper create(final ResourceResolver resolver) {
+    public static @NotNull MockHelper create(@NotNull final ResourceResolver resolver) {
         return new MockHelper(resolver);
     }
 
@@ -63,7 +65,7 @@ public class MockHelper {
      * @param path Resource path
      * @return this
      */
-    public MockHelper resource(final String path) {
+    public @NotNull MockHelper resource(@NotNull final String path) {
         final String fullPath;
         if ( path.startsWith("/") ) {
             fullPath = path;
@@ -87,7 +89,7 @@ public class MockHelper {
      * @param value Property value
      * @return this
      */
-    public MockHelper p(final String name, final Object value) {
+    public @NotNull MockHelper p(@NotNull final String name, @Nullable final Object value) {
         final Description d = this.stack.peek();
         d.properties.put(name, value);
 
@@ -98,6 +100,7 @@ public class MockHelper {
      * Finish building and add all resources to the resource tree.
      * @throws PersistenceException Persistence exception
      */
+    @SuppressWarnings("null")
     public void add() throws PersistenceException {
         for(int i=0; i<this.stack.size(); i++) {
             final Description d = this.stack.get(i);
@@ -115,7 +118,7 @@ public class MockHelper {
         this.resolver.commit();
     }
 
-    private void create(final String path, final Map<String, Object> properties) throws PersistenceException {
+    private void create(@NotNull final String path, @NotNull final Map<String, Object> properties) throws PersistenceException {
         final String parentPath = ResourceUtil.getParent(path);
         final String name = ResourceUtil.getName(path);
 
