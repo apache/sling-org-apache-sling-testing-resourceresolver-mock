@@ -44,6 +44,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 public class MockResourceResolver extends SlingAdaptable implements ResourceResolver {
 
@@ -326,27 +327,28 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     public void commit() throws PersistenceException {
+        EventAdmin eventAdmin = this.options.getEventAdmin();
         synchronized ( this.resources ) {
             for(final String path : this.deletedResources ) {
-                if ( this.resources.remove(path) != null && this.options.getEventAdmin() != null ) {
+                if ( this.resources.remove(path) != null && eventAdmin != null ) {
                     final Dictionary<String, Object> props = new Hashtable<String, Object>();
                     props.put(SlingConstants.PROPERTY_PATH, path);
                     final Event e = new Event(SlingConstants.TOPIC_RESOURCE_REMOVED, props);
-                    this.options.getEventAdmin().sendEvent(e);
+                    eventAdmin.sendEvent(e);
                 }
                 this.temporaryResources.remove(path);
             }
             for(final String path : this.temporaryResources.keySet() ) {
                 final boolean changed = this.resources.containsKey(path);
                 this.resources.put(path, this.temporaryResources.get(path));
-                if ( this.options.getEventAdmin() != null ) {
+                if ( eventAdmin != null ) {
                     final Dictionary<String, Object> props = new Hashtable<String, Object>();
                     props.put(SlingConstants.PROPERTY_PATH, path);
                     if ( this.resources.get(path).get(ResourceResolver.PROPERTY_RESOURCE_TYPE) != null ) {
                         props.put(SlingConstants.PROPERTY_RESOURCE_TYPE, this.resources.get(path).get(ResourceResolver.PROPERTY_RESOURCE_TYPE));
                     }
                     final Event e = new Event(changed ? SlingConstants.TOPIC_RESOURCE_CHANGED : SlingConstants.TOPIC_RESOURCE_ADDED, props);
-                    this.options.getEventAdmin().sendEvent(e);
+                    eventAdmin.sendEvent(e);
                 }
             }
         }

@@ -27,6 +27,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.event.EventAdmin;
 
 
@@ -46,7 +47,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
      * Create a new resource resolver factory
      * @param eventAdmin All resource events are sent to this event admin
      */
-    public MockResourceResolverFactory(final EventAdmin eventAdmin) {
+    public MockResourceResolverFactory(@Nullable final EventAdmin eventAdmin) {
         this(new MockResourceResolverFactoryOptions().setEventAdmin(eventAdmin));
     }
 
@@ -61,7 +62,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
      * Create a new resource resolver factory.
      * @param options Options
      */
-    public MockResourceResolverFactory(final MockResourceResolverFactoryOptions options) {
+    public MockResourceResolverFactory(@NotNull final MockResourceResolverFactoryOptions options) {
         this.options = options;
         Map<String, Object> props= new HashMap<String,Object>();
         props.put(MockResource.JCR_PRIMARYTYPE, ROOT_PRIMARY_TYPE);

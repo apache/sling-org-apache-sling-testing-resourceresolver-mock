@@ -18,6 +18,8 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.event.EventAdmin;
 
 /**
@@ -31,20 +33,22 @@ public class MockResourceResolverFactoryOptions {
     
     private boolean mangleNamespacePrefixes;
 
-    public EventAdmin getEventAdmin() {
+    public @Nullable EventAdmin getEventAdmin() {
         return eventAdmin;
     }
 
-    public MockResourceResolverFactoryOptions setEventAdmin(EventAdmin eventAdmin) {
+    public @NotNull MockResourceResolverFactoryOptions setEventAdmin(@Nullable EventAdmin eventAdmin) {
         this.eventAdmin = eventAdmin;
         return this;
     }
 
-    public String[] getSearchPaths() {
+    @SuppressWarnings("null")
+    public @NotNull String @NotNull [] getSearchPaths() {
         return searchPaths;
     }
 
-    public MockResourceResolverFactoryOptions setSearchPaths(String[] searchPaths) {
+    @SuppressWarnings("null")
+    public @NotNull MockResourceResolverFactoryOptions setSearchPaths(@NotNull String @Nullable [] searchPaths) {
         if ( searchPaths == null ) {
             searchPaths = new String[] {};
         }
@@ -56,8 +60,9 @@ public class MockResourceResolverFactoryOptions {
         return mangleNamespacePrefixes;
     }
 
-    public void setMangleNamespacePrefixes(boolean mangleNamespacePrefixes) {
+    public @NotNull MockResourceResolverFactoryOptions setMangleNamespacePrefixes(boolean mangleNamespacePrefixes) {
         this.mangleNamespacePrefixes = mangleNamespacePrefixes;
+        return this;
     }
     
 }
