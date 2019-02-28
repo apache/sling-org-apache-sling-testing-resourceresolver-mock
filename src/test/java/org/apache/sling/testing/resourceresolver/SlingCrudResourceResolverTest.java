@@ -307,4 +307,11 @@ public class SlingCrudResourceResolverTest {
         assertEquals(r2.getPath(), resourceResolver.getParentResourceType(r4.getPath()));
     }
     
+
+    @Test
+    public void testResourceMetadata() throws IOException {
+        Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
+        assertEquals(testRoot.getPath() + "/node1", resource1.getResourceMetadata().getResolutionPath());
+    }
+
 }

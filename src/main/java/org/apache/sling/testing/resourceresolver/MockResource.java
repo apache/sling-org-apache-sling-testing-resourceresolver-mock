@@ -50,6 +50,7 @@ public class MockResource extends AbstractResource {
             final ResourceResolver resolver) {
         this.resolver = resolver;
         this.path = path;
+        rm.setResolutionPath(path);
         if (props instanceof MockValueMap) {
             this.props = (MockValueMap)props;
         }
