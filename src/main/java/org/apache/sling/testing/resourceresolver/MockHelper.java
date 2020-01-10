@@ -100,7 +100,6 @@ public class MockHelper {
      * Finish building and add all resources to the resource tree.
      * @throws PersistenceException Persistence exception
      */
-    @SuppressWarnings("null")
     public void add() throws PersistenceException {
         for(int i=0; i<this.stack.size(); i++) {
             final Description d = this.stack.get(i);

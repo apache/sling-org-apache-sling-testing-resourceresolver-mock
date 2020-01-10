@@ -68,6 +68,7 @@ public class MockResource extends AbstractResource {
     }
 
     @Override
+    @SuppressWarnings({ "null", "unused" })
     public String getResourceType() {
         String resourceType = this.props.get(ResourceResolver.PROPERTY_RESOURCE_TYPE, String.class);
         if (resourceType == null) {
@@ -78,6 +79,7 @@ public class MockResource extends AbstractResource {
     }
 
     @Override
+    @SuppressWarnings("null")
     public String getResourceSuperType() {
         return this.props.get("sling:resourceSuperType", String.class);
     }
@@ -115,6 +117,7 @@ public class MockResource extends AbstractResource {
      * Emulate feature of JCR resource implementation that allows adapting to InputStream for nt:file and nt:resource nodes.
      * @return InputStream or null if adaption not possible.
      */
+    @SuppressWarnings("null")
     private InputStream getFileResourceInputStream() {
         String resourceType = getResourceType();
         if (NT_RESOURCE.equals(resourceType)) {
