@@ -44,7 +44,8 @@ public class MockResource extends AbstractResource {
     static final String JCR_DATA = "jcr:data";
     static final String NT_RESOURCE = "nt:resource";
     static final String NT_FILE = "nt:file";
-    
+    static final String NT_UNSTRUCTURED = "nt:unstructured";
+
     public MockResource(final String path,
             final Map<String, Object> props,
             final ResourceResolver resolver) {
@@ -74,6 +75,10 @@ public class MockResource extends AbstractResource {
         if (resourceType == null) {
             // fallback to jcr:primaryType if not resouce type exists (to mimick JCR resource behavior)
             resourceType = this.props.get(JCR_PRIMARYTYPE, String.class);
+        }
+        if (resourceType == null) {
+            // fallback to nt:unstructured if no other resource type can be detected
+            resourceType = NT_UNSTRUCTURED;
         }
         return resourceType;
     }

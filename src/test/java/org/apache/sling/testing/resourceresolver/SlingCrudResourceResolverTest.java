@@ -315,4 +315,9 @@ public class SlingCrudResourceResolverTest {
         assertEquals(testRoot.getPath() + "/node1", resource1.getResourceMetadata().getResolutionPath());
     }
 
+    @Test
+    public void testResourceWithoutResourceType() throws PersistenceException {
+        Resource noResourceType = resourceResolver.create(testRoot, "/noResourceType", ImmutableMap.<String, Object>of());
+        assertNotNull(noResourceType.getResourceType());
+    }
 }
