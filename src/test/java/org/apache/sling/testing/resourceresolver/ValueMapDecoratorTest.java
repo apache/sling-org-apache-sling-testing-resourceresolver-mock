@@ -34,6 +34,7 @@ import org.junit.Test;
 /**
  * This is copied from org.apache.sling.api.wrappers.ValueMapDecoratorTest
  */
+@SuppressWarnings("null")
 public class ValueMapDecoratorTest {
 
     private Map<String, Object> map;

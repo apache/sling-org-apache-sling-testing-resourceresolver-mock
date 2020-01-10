@@ -48,7 +48,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
         super(resource, new ValueMapDecorator(convertForWriteAll(map)));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "null", "unused" })
     @Override
     public <T> T get(String name, Class<T> type) {
         

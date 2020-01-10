@@ -53,6 +53,7 @@ import com.google.common.collect.Lists;
  * Implements simple write and read resource and values test.
  * Sling CRUD API is used to create the test data.
  */
+@SuppressWarnings("null")
 public class SlingCrudResourceResolverTest {
 
     private static final String STRING_VALUE = "value1";

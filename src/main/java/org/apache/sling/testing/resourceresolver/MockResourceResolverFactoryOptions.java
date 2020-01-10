@@ -42,12 +42,10 @@ public class MockResourceResolverFactoryOptions {
         return this;
     }
 
-    @SuppressWarnings("null")
     public @NotNull String @NotNull [] getSearchPaths() {
         return searchPaths;
     }
 
-    @SuppressWarnings("null")
     public @NotNull MockResourceResolverFactoryOptions setSearchPaths(@NotNull String @Nullable [] searchPaths) {
         if ( searchPaths == null ) {
             searchPaths = new String[] {};

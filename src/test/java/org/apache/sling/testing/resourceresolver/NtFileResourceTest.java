@@ -44,6 +44,7 @@ import com.google.common.collect.ImmutableMap;
  * Implements simple write and read resource and values test.
  * Sling CRUD API is used to create the test data.
  */
+@SuppressWarnings("null")
 public class NtFileResourceTest {
 
     private static final byte[] BINARY_VALUE = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };

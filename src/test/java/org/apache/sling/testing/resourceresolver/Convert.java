@@ -37,7 +37,7 @@ final class Convert {
         // static methods only
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "null" })
     public static class ConversionAssert<T,U> {
         private final T input1;
         private final T input2;

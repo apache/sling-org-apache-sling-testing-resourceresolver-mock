@@ -42,6 +42,7 @@ class DeepReadModifiableValueMapDecorator extends ValueMapDecorator implements M
         this.base = base;
     }
 
+    @SuppressWarnings("null")
     private ValueMap getValueMap(final String name) {
         final int pos = name.lastIndexOf("/");
         if ( pos == -1 ) {

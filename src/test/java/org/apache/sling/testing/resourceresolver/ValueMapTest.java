@@ -37,6 +37,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * Test different ValueMap variants.
  */
+@SuppressWarnings("null")
 public class ValueMapTest {
 
     private ResourceResolver resourceResolver;
