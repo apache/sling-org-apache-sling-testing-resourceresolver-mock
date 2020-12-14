@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +60,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private final MockResourceResolverFactory factory;
     
     private final Map<String,Object> attributes;
+
+    BiFunction<String, String, Iterator<Resource>> findResourcesFunction;
 
     public MockResourceResolver(final MockResourceResolverFactoryOptions options,
             final MockResourceResolverFactory factory,
@@ -442,6 +445,21 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         return this.getResource(parentPath);
     }
 
+    /** 
+     * Registers a function to be used when {@link #findResources(String, String)} is called on the given resolver.
+     * Overwrites the previously registered function for {@code findResources} (if there was any).
+     * 
+     * @param resolver the resolver for which to register the function
+     * @param findResourcesFunction the function to register, set to {@code null} to rely on the default behaviour (i.e. throw UnsupportedOperationException)
+     * @throws IllegalArgumentException in case the given resolver is not a MockResourceResolver
+     */
+    public static void registerFindResourcesFunction(ResourceResolver resolver, BiFunction<String, String, Iterator<Resource>> findResourcesFunction) {
+        if (!(resolver instanceof MockResourceResolver)) {
+            throw new IllegalArgumentException("Can only register findResources function for resolver of type MockResourceResolver, but it is type " + resolver.getClass());
+        }
+        MockResourceResolver mockResolver = MockResourceResolver.class.cast(resolver);
+        mockResolver.findResourcesFunction = findResourcesFunction;
+    }
 
     // --- unsupported operations ---
 
@@ -453,7 +471,11 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     public Iterator<Resource> findResources(final String query, final String language) {
-        throw new UnsupportedOperationException();
+        if (findResourcesFunction != null) {
+            return findResourcesFunction.apply(query, language);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override

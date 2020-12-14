@@ -29,9 +29,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.ISO8601;
@@ -43,6 +47,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -319,5 +324,42 @@ public class SlingCrudResourceResolverTest {
     public void testResourceWithoutResourceType() throws PersistenceException {
         Resource noResourceType = resourceResolver.create(testRoot, "/noResourceType", ImmutableMap.<String, Object>of());
         assertNotNull(noResourceType.getResourceType());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testFindResourcesWithoutRegisteredFunction() {
+        resourceResolver.findResources("//",  "xpath");
+    }
+
+    @Test()
+    public void testFindResourcesWithRegisteredFunction() {
+        Resource node11 = resourceResolver.getResource(testRoot.getPath() + "/node11");
+        
+        MockResourceResolver.registerFindResourcesFunction(resourceResolver, new BiFunction<String, String, Iterator<Resource>>() {
+            
+            @Override
+            public Iterator<Resource> apply(String query, String language) {
+                if ("//".equals(query) && "xpath".equals(language)) {
+                    return Collections.singleton(node11).iterator();
+                } else {
+                    return Collections.emptyIterator();
+                }
+            }
+        });
+        
+        List<Resource> resultList = new ArrayList<>();
+        resourceResolver.findResources("//",  "xpath").forEachRemaining(resultList::add);
+        assertEquals(Collections.singletonList(node11), resultList);
+        resultList = new ArrayList<>();
+        resourceResolver.findResources("//",  "invalid").forEachRemaining(resultList::add);
+        assertEquals(Collections.emptyList(), resultList);
+        
+        MockResourceResolver.registerFindResourcesFunction(resourceResolver, null);
+        try {
+            resourceResolver.findResources("//",  "xpath").forEachRemaining(resultList::add);
+            Assert.fail("The previous call of findResources should have failed with UnsupportedOperationsException");
+        } catch (UnsupportedOperationException e) {
+            
+        }
     }
 }
