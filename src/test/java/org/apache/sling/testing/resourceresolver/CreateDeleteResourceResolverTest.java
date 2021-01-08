@@ -49,6 +49,7 @@ public class CreateDeleteResourceResolverTest {
     private Resource testRoot;
 
     @Before
+    @SuppressWarnings("null")
     public final void setUp() throws IOException, LoginException {
         resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
         Resource root = resourceResolver.getResource("/");

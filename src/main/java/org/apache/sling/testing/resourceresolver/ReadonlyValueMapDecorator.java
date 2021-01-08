@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.sling.api.resource.ValueMap;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Decorator that disallows access to all methods that modify the value map.
@@ -51,11 +52,12 @@ class ReadonlyValueMapDecorator implements ValueMap {
         throw new UnsupportedOperationException("ValueMap is read-only.");
     }
 
-    public <T> T get(String name, Class<T> type) {
+    @SuppressWarnings("null")
+    public <T> T get(@NotNull String name, @NotNull Class<T> type) {
         return delegate.get(name, type);
     }
 
-    public <T> T get(String name, T defaultValue) {
+    public @NotNull <T> T get(@NotNull String name, @NotNull T defaultValue) {
         return delegate.get(name, defaultValue);
     }
 

@@ -23,6 +23,7 @@ import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Resource that wraps a property value.
@@ -45,12 +46,14 @@ class MockPropertyResource extends AbstractResource {
     }
 
     @Override
-    public String getPath() {
+    public @NotNull String getPath() {
         return this.path;
     }
 
     @Override
-    public String getResourceType() {
+    @SuppressWarnings("null")
+    public @NotNull String getResourceType() {
+        // TODO: we should return a resource type here!
         return null;
     }
 
@@ -60,16 +63,17 @@ class MockPropertyResource extends AbstractResource {
     }
 
     @Override
-    public ResourceMetadata getResourceMetadata() {
+    public @NotNull ResourceMetadata getResourceMetadata() {
         return rm;
     }
 
     @Override
-    public ResourceResolver getResourceResolver() {
+    public @NotNull ResourceResolver getResourceResolver() {
         return this.resolver;
     }
 
     @Override
+    @SuppressWarnings("null")
     public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
         AdapterType value = props.get(key, type);
         if (value!=null) {

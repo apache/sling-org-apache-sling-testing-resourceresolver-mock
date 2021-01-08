@@ -117,6 +117,7 @@ public class MockHelper {
         this.resolver.commit();
     }
 
+    @SuppressWarnings("null")
     private void create(@NotNull final String path, @NotNull final Map<String, Object> properties) throws PersistenceException {
         final String parentPath = ResourceUtil.getParent(path);
         final String name = ResourceUtil.getName(path);

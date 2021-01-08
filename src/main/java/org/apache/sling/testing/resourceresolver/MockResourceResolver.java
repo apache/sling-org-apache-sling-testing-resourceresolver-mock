@@ -43,6 +43,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
@@ -77,7 +78,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public Resource resolve(final HttpServletRequest request, final String absPath) {
+    @SuppressWarnings("unused")
+    public @NotNull Resource resolve(final @NotNull HttpServletRequest request, final @NotNull String absPath) {
         String path = absPath;
         if (path == null) {
             path = "/";
@@ -107,17 +109,19 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public Resource resolve(final String absPath) {
+    @SuppressWarnings("null")
+    public @NotNull Resource resolve(final @NotNull String absPath) {
         return resolve(null, absPath);
     }
 
     @Override
-    public String map(final String resourcePath) {
+    @SuppressWarnings("null")
+    public @NotNull String map(final @NotNull String resourcePath) {
         return map(null, resourcePath);
     }
 
     @Override
-    public String map(final HttpServletRequest request, final String resourcePath) {
+    public String map(final @NotNull HttpServletRequest request, final @NotNull String resourcePath) {
         String path = resourcePath;
 
         // split off query string or fragment that may be appendend to the URL
@@ -138,7 +142,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
     
     @Override
-    public Resource getResource(final String path) {
+    public Resource getResource(final @NotNull String path) {
         Resource resource = getResourceInternal(path);
         
         // if not resource found check if this is a reference to a property
@@ -195,7 +199,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public Resource getResource(Resource base, String path) {
+    public Resource getResource(Resource base, @NotNull String path) {
         if ( path == null || path.length() == 0 ) {
             path = "/";
         }
@@ -209,12 +213,12 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public String[] getSearchPath() {
+    public String @NotNull [] getSearchPath() {
         return this.options.getSearchPaths();
     }
 
     @Override
-    public Iterator<Resource> listChildren(final Resource parent) {
+    public @NotNull Iterator<Resource> listChildren(final @NotNull Resource parent) {
         final String pathPrefix = "/".equals(parent.getPath()) ? "" : parent.getPath();
         final Pattern childPathMatcher = Pattern.compile("^" + Pattern.quote(pathPrefix) + "/[^/]+$");
         final Map<String, Map<String, Object>> candidates = new LinkedHashMap<String, Map<String,Object>>();
@@ -241,8 +245,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         return children.iterator();
     }
 
-    // part of Resource API 2.5.0
-    public Iterable<Resource> getChildren(final Resource parent) {
+    @Override
+    public @NotNull Iterable<Resource> getChildren(final @NotNull Resource parent) {
         return new Iterable<Resource>() {
             @Override
             public Iterator<Resource> iterator() {
@@ -267,17 +271,17 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public Iterator<String> getAttributeNames() {
+    public @NotNull Iterator<String> getAttributeNames() {
         return attributes.keySet().iterator();
     }
 
     @Override
-    public Object getAttribute(final String name) {
+    public Object getAttribute(final @NotNull String name) {
         return attributes.get(name);
     }
 
     @Override
-    public void delete(final Resource resource) throws PersistenceException {
+    public void delete(final @NotNull Resource resource) throws PersistenceException {
         this.deletedResources.add(resource.getPath());
         this.temporaryResources.remove(resource.getPath());
         final String prefixPath = resource.getPath() + '/';
@@ -298,7 +302,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public Resource create(Resource parent, String name,
+    public @NotNull Resource create(@NotNull Resource parent, @NotNull String name,
             Map<String, Object> properties) throws PersistenceException {
         final String path = (parent.getPath().equals("/") ? parent.getPath() + name : parent.getPath() + '/' + name);
         if ( this.temporaryResources.containsKey(path) ) {
@@ -326,6 +330,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void commit() throws PersistenceException {
         EventAdmin eventAdmin = this.options.getEventAdmin();
         synchronized ( this.resources ) {
@@ -428,13 +433,13 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         return resourceSuperType;
     }
     
-    // part of Resource API 2.6.0
-    public boolean hasChildren(Resource resource) {
+    @Override
+    public boolean hasChildren(@NotNull Resource resource) {
         return this.listChildren(resource).hasNext();
     }
 
-    // part of Resource API 2.11.0
-    public Resource getParent(Resource child) {
+    @Override
+    public Resource getParent(@NotNull Resource child) {
         final String parentPath = ResourceUtil.getParent(child.getPath());
         if (parentPath == null) {
             return null;
@@ -447,31 +452,31 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     @Deprecated
-    public Resource resolve(final HttpServletRequest request) {
+    public @NotNull Resource resolve(final @NotNull HttpServletRequest request) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Resource> findResources(final String query, final String language) {
+    public @NotNull Iterator<Resource> findResources(final @NotNull String query, final String language) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Map<String, Object>> queryResources(String query, String language) {
+    public @NotNull Iterator<Map<String, Object>> queryResources(@NotNull String query, String language) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ResourceResolver clone(Map<String, Object> authenticationInfo) throws LoginException {
+    public @NotNull ResourceResolver clone(Map<String, Object> authenticationInfo) throws LoginException {
         throw new UnsupportedOperationException();
     }
 
-    // part of Resource API 2.11.0
+    @Override
     public Resource copy(String srcAbsPath, String destAbsPath) throws PersistenceException {
         throw new UnsupportedOperationException();
     }
 
-    // part of Resource API 2.11.0
+    @Override
     public Resource move(String srcAbsPath, String destAbsPath) throws PersistenceException {
         throw new UnsupportedOperationException();
     }

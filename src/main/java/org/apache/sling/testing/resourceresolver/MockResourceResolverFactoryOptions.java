@@ -42,7 +42,7 @@ public class MockResourceResolverFactoryOptions {
         return this;
     }
 
-    public @NotNull String @NotNull [] getSearchPaths() {
+    public String @NotNull [] getSearchPaths() {
         return searchPaths;
     }
 

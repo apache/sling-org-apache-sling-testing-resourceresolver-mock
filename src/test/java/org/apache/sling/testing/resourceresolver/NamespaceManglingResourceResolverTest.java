@@ -32,6 +32,7 @@ public class NamespaceManglingResourceResolverTest {
     private ResourceResolver resolver;
     
     @Before
+    @SuppressWarnings("null")
     public void setUp() throws Exception {
         MockResourceResolverFactoryOptions options = new MockResourceResolverFactoryOptions();
         options.setMangleNamespacePrefixes(true);

@@ -27,9 +27,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class RootResourceTypeTest {
-
 
     private ResourceResolver resourceResolver;
 
@@ -38,8 +36,8 @@ public class RootResourceTypeTest {
         resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);       
     }
 
-
     @Test
+    @SuppressWarnings("null")
     public void testIsResourceResolver() {
         Resource root= resourceResolver.getResource("/");
         Assert.assertTrue(root.isResourceType("rep:root"));
@@ -50,6 +48,5 @@ public class RootResourceTypeTest {
         Resource rootParent = resourceResolver.getResource("/..");
         Assert.assertNull(rootParent);
     }
-
 
 }

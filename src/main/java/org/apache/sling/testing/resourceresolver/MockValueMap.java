@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.wrappers.DeepReadModifiableValueMapDecorator;
 
 /**
  * ValueMap for mocked resources to mimick JCR-like behavior.

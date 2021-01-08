@@ -28,6 +28,7 @@ import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
+import org.jetbrains.annotations.NotNull;
 
 public class MockResource extends AbstractResource {
 
@@ -64,13 +65,12 @@ public class MockResource extends AbstractResource {
     }
 
     @Override
-    public String getPath() {
+    public @NotNull String getPath() {
         return this.path;
     }
 
     @Override
-    @SuppressWarnings({ "null", "unused" })
-    public String getResourceType() {
+    public @NotNull String getResourceType() {
         String resourceType = this.props.get(ResourceResolver.PROPERTY_RESOURCE_TYPE, String.class);
         if (resourceType == null) {
             // fallback to jcr:primaryType if not resouce type exists (to mimick JCR resource behavior)
@@ -84,23 +84,22 @@ public class MockResource extends AbstractResource {
     }
 
     @Override
-    @SuppressWarnings("null")
     public String getResourceSuperType() {
         return this.props.get("sling:resourceSuperType", String.class);
     }
 
     @Override
-    public ResourceMetadata getResourceMetadata() {
+    public @NotNull ResourceMetadata getResourceMetadata() {
         return rm;
     }
 
     @Override
-    public ResourceResolver getResourceResolver() {
+    public @NotNull ResourceResolver getResourceResolver() {
         return this.resolver;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings({ "unchecked", "null" })
     public <AdapterType> AdapterType adaptTo(final Class<AdapterType> type) {
         if ( type == ValueMap.class || type == Map.class ) {
             return (AdapterType)new ReadonlyValueMapDecorator(this.props);
@@ -122,7 +121,6 @@ public class MockResource extends AbstractResource {
      * Emulate feature of JCR resource implementation that allows adapting to InputStream for nt:file and nt:resource nodes.
      * @return InputStream or null if adaption not possible.
      */
-    @SuppressWarnings("null")
     private InputStream getFileResourceInputStream() {
         String resourceType = getResourceType();
         if (NT_RESOURCE.equals(resourceType)) {
@@ -137,7 +135,7 @@ public class MockResource extends AbstractResource {
         return null;
     }
 
-    // part of Resource API 2.7.0
+    @Override
     public ValueMap getValueMap() {
         return this.adaptTo(ValueMap.class);
     }

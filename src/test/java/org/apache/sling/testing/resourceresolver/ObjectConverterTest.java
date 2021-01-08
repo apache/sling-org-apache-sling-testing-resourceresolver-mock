@@ -35,6 +35,7 @@ import org.junit.Test;
 /**
  * This is copied from org.apache.sling.api.wrappers.impl.ObjectConverterTest
  */
+@SuppressWarnings("null")
 public class ObjectConverterTest {
     
     private static final String STRING_1 = "item1";

@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.service.event.EventAdmin;
 
-
 /**
  * Simple resource resolver factory
  */
@@ -70,7 +69,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     }
 
     @Override
-    public ResourceResolver getResourceResolver(
+    public @NotNull ResourceResolver getResourceResolver(
             final Map<String, Object> authenticationInfo) throws LoginException {
         
         // put user name in resolver attributes
@@ -90,13 +89,13 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     }
 
     @Override
-    public ResourceResolver getAdministrativeResourceResolver(
+    public @NotNull ResourceResolver getAdministrativeResourceResolver(
             final Map<String, Object> authenticationInfo) throws LoginException {
         return new MockResourceResolver(options, this, resources);
     }
 
-    // part of Resource API 2.5.0
-    public ResourceResolver getServiceResourceResolver(
+    @Override
+    public @NotNull ResourceResolver getServiceResourceResolver(
             Map<String, Object> authenticationInfo) throws LoginException {
         return new MockResourceResolver(options, this, resources);
     }
@@ -106,7 +105,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
      */
     private ThreadLocal<Stack<ResourceResolver>> resolverStackHolder = new ThreadLocal<Stack<ResourceResolver>>();
 
-    // part of Resource API 2.8.0
+    @Override
     public ResourceResolver getThreadResourceResolver() {
         ResourceResolver result = null;
         final Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
