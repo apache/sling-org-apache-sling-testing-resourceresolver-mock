@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -60,6 +61,9 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private final MockResourceResolverFactory factory;
     
     private final Map<String,Object> attributes;
+    
+    private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
+    private final List<MockQueryResourceHandler> queryResourcesHandlers = new ArrayList<>();
 
     public MockResourceResolver(final MockResourceResolverFactoryOptions options,
             final MockResourceResolverFactory factory,
@@ -447,22 +451,54 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         return this.getResource(parentPath);
     }
 
+    @Override
+    @SuppressWarnings("null")
+    public @NotNull Iterator<Resource> findResources(final @NotNull String query, final String language) {
+        return findResourcesHandlers.stream()
+            .map(handler -> handler.findResources(query, language))
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(Collections.emptyIterator());
+    }
+
+    /**
+     * Adds a handler that can provide a mocked find resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link #findResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param handler Handler
+     */
+    public void addFindResourceHandler(@NotNull MockFindResourcesHandler handler) {
+        findResourcesHandlers.add(handler);
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public @NotNull Iterator<Map<String, Object>> queryResources(@NotNull String query, String language) {
+        return queryResourcesHandlers.stream()
+                .map(handler -> handler.queryResources(query, language))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(Collections.emptyIterator());
+    }
+
+    /**
+     * Adds a handler that can provide a mocked query resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link #queryResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param handler Handler
+     */
+    public void addQueryResourceHandler(@NotNull MockQueryResourceHandler handler) {
+        queryResourcesHandlers.add(handler);
+    }
+
 
     // --- unsupported operations ---
 
     @Override
     @Deprecated
     public @NotNull Resource resolve(final @NotNull HttpServletRequest request) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public @NotNull Iterator<Resource> findResources(final @NotNull String query, final String language) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public @NotNull Iterator<Map<String, Object>> queryResources(@NotNull String query, String language) {
         throw new UnsupportedOperationException();
     }
 
