@@ -462,7 +462,11 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     /**
-     * @param handler Handler that can provide a mocked find resources result.
+     * Adds a handler that can provide a mocked find resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link #findResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param handler Handler
      */
     public void addFindResourceHandler(@NotNull MockFindResourcesHandler handler) {
         findResourcesHandlers.add(handler);
@@ -479,7 +483,11 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     /**
-     * @param handler Handler that can provide a mocked query resources result.
+     * Adds a handler that can provide a mocked query resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link #queryResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param handler Handler
      */
     public void addQueryResourceHandler(@NotNull MockQueryResourceHandler handler) {
         queryResourcesHandlers.add(handler);
