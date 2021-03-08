@@ -135,7 +135,7 @@ public class SlingCrudResourceResolverTest {
         assertEquals(new BigDecimal(DOUBLE_VALUE).doubleValue(), props.get("doubleProp", BigDecimal.class).doubleValue(), 0.0001d);
         assertEquals(BIGDECIMAL_VALUE.doubleValue() , props.get("bigDecimalProp", Double.class), 0.0001d);
     }
-    
+
     @Test
     public void testSimpleProperties_DeepPathAccess() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath());
@@ -171,7 +171,7 @@ public class SlingCrudResourceResolverTest {
         assertNotNull(calendarValue);
         assertEquals(DATE_VALUE, calendarValue.getTime());
     }
-    
+
     @Test
     public void testCalendarProperty() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
@@ -187,19 +187,19 @@ public class SlingCrudResourceResolverTest {
         assertNotNull(dateValue);
         assertEquals(CALENDAR_VALUE.getTime(), dateValue);
     }
-    
+
     @Test
     public void testStringToCalendarConversion() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
         ModifiableValueMap modProps = resource1.adaptTo(ModifiableValueMap.class);
         modProps.put("dateISO8601String", ISO8601.format(CALENDAR_VALUE));
         resourceResolver.commit();
-        
+
         resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
         ValueMap props = ResourceUtil.getValueMap(resource1);
         assertEquals(CALENDAR_VALUE.getTime(), props.get("calendarProp", Calendar.class).getTime());
     }
-    
+
     @Test
     public void testListChildren() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
@@ -283,14 +283,14 @@ public class SlingCrudResourceResolverTest {
         assertNotNull(resource);
         assertEquals(testRoot.getPath() + "/node1", resource.getPath());
     }
-    
+
     @Test
     public void testResolveNonexistingResource() {
         Resource resource = resourceResolver.resolve("/non/existing/path");
         assertTrue(resource instanceof NonExistingResource);
         assertEquals("/non/existing/path", resource.getPath());
     }
-    
+
     @Test
     public void testGetParentResourceType() throws PersistenceException {
         Resource r1 = resourceResolver.create(testRoot, "resource1", ImmutableMap.<String, Object>of());
@@ -300,14 +300,14 @@ public class SlingCrudResourceResolverTest {
                 "sling:resourceType", testRoot.getPath() + "/resource2"));
         Resource r4 = resourceResolver.create(testRoot, "resource4", ImmutableMap.<String, Object>of(
                 "sling:resourceSuperType", testRoot.getPath() + "/resource2"));
-        
+
         assertNull(resourceResolver.getParentResourceType(r1));
         assertEquals(r1.getPath(), resourceResolver.getParentResourceType(r2));
         assertEquals(r1.getPath(), resourceResolver.getParentResourceType(r3));
         assertEquals(r2.getPath(), resourceResolver.getParentResourceType(r4));
         assertEquals(r2.getPath(), resourceResolver.getParentResourceType(r4.getPath()));
     }
-    
+
 
     @Test
     public void testResourceMetadata() throws IOException {

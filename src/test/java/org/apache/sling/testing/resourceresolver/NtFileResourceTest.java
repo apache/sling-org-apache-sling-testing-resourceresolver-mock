@@ -64,7 +64,7 @@ public class NtFileResourceTest {
         Resource file = resourceResolver.create(testRoot, "ntFile", ImmutableMap.<String, Object>builder()
                 .put(JCR_PRIMARYTYPE, NT_FILE)
                 .build());
-        resourceResolver.create(file, JCR_CONTENT, ImmutableMap.<String, Object>builder() 
+        resourceResolver.create(file, JCR_CONTENT, ImmutableMap.<String, Object>builder()
             .put(JCR_PRIMARYTYPE, NT_RESOURCE)
             .put(JCR_DATA, new ByteArrayInputStream(BINARY_VALUE))
             .build());
@@ -73,7 +73,7 @@ public class NtFileResourceTest {
         Resource resource = resourceResolver.getResource(path);
         InputStream is = resource.adaptTo(InputStream.class);
         assertNotNull(is);
-        
+
         assertArrayEquals(BINARY_VALUE, IOUtils.toByteArray(is));
         is.close();
     }
@@ -89,7 +89,7 @@ public class NtFileResourceTest {
         Resource resource = resourceResolver.getResource(path);
         InputStream is = resource.adaptTo(InputStream.class);
         assertNotNull(is);
-        
+
         assertArrayEquals(BINARY_VALUE, IOUtils.toByteArray(is));
         is.close();
     }

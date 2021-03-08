@@ -30,7 +30,7 @@ import org.junit.Test;
 public class NamespaceManglingResourceResolverTest {
 
     private ResourceResolver resolver;
-    
+
     @Before
     @SuppressWarnings("null")
     public void setUp() throws Exception {
@@ -38,20 +38,20 @@ public class NamespaceManglingResourceResolverTest {
         options.setMangleNamespacePrefixes(true);
         ResourceResolverFactory factory = new MockResourceResolverFactory(options);
         resolver = factory.getResourceResolver(null);
-        
+
         Resource res1 = resolver.create(resolver.getResource("/"), "res1", ValueMap.EMPTY);
         Resource content = resolver.create(res1, "jcr:content", ValueMap.EMPTY);
         resolver.create(content, "res2", ValueMap.EMPTY);
     }
-    
+
     @Test
     public void testMap() {
         assertEquals("/res1/_jcr_content/res2", resolver.map("/res1/jcr:content/res2"));
     }
-    
+
     @Test
     public void testResolve() {
         assertEquals("/res1/jcr:content/res2", resolver.resolve("/res1/_jcr_content/res2").getPath());
     }
-    
+
 }

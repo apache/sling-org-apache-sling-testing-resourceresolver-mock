@@ -42,7 +42,7 @@ public class IsResourceTypeTest {
     public final void setUp() throws LoginException {
         resolver = new MockResourceResolverFactory().getResourceResolver(null);
     }
-    
+
     @Test
     public void testIsResourceType() {
         /**

@@ -33,7 +33,7 @@ public class RootResourceTypeTest {
 
     @Before
     public final void setUp() throws IOException, LoginException {
-        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);       
+        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @Test

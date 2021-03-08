@@ -39,9 +39,9 @@ public class ResourceResolverLoginTest {
 
     private static final Map<String,Object> AUTH_INFO = ImmutableMap.<String, Object>of(
                 ResourceResolverFactory.USER, "myUser");
-    
+
     private MockResourceResolverFactory factory;
-    
+
     @Before
     public void setUp() {
         factory = new MockResourceResolverFactory();

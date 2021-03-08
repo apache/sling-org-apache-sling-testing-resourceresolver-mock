@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * Decorator that disallows access to all methods that modify the value map.
  */
 class ReadonlyValueMapDecorator implements ValueMap {
-    
+
     private final ValueMap delegate;
 
     public ReadonlyValueMapDecorator(ValueMap base) {

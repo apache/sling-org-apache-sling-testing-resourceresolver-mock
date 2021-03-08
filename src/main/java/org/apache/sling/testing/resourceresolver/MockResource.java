@@ -116,7 +116,7 @@ public class MockResource extends AbstractResource {
         }
         return super.adaptTo(type);
     }
-    
+
     /**
      * Emulate feature of JCR resource implementation that allows adapting to InputStream for nt:file and nt:resource nodes.
      * @return InputStream or null if adaption not possible.

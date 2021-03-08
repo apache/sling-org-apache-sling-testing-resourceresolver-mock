@@ -34,7 +34,7 @@ import org.osgi.service.event.EventAdmin;
  * Simple resource resolver factory
  */
 public class MockResourceResolverFactory implements ResourceResolverFactory {
-    
+
     private static final String ROOT_PRIMARY_TYPE="rep:root";
 
     /** We use a linked hash map to preserve creation order. */
@@ -71,13 +71,13 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     @Override
     public @NotNull ResourceResolver getResourceResolver(
             final Map<String, Object> authenticationInfo) throws LoginException {
-        
+
         // put user name in resolver attributes
         Map<String,Object> attributes = new HashMap<String, Object>();
         if (authenticationInfo!=null) {
             attributes.put(ResourceResolverFactory.USER, authenticationInfo.get(ResourceResolverFactory.USER));
         }
-        
+
         final ResourceResolver result = new MockResourceResolver(options, this, resources, attributes);
         Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
         if ( resolverStack == null ) {

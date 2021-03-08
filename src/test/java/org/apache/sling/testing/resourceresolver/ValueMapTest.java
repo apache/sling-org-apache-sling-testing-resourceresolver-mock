@@ -60,10 +60,10 @@ public class ValueMapTest {
     @Test
     public void testMap() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
-        
+
         Map<String, Object> map = resource1.adaptTo(Map.class);
         assertTrue(map instanceof ValueMap && !(map instanceof ModifiableValueMap));
-        
+
         assertEquals("value1", map.get("prop1"));
     }
 
@@ -71,7 +71,7 @@ public class ValueMapTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testMap_Readonly() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
-        
+
         Map<String, Object> map = resource1.adaptTo(Map.class);
         map.put("prop1", "value2");
     }
@@ -79,17 +79,17 @@ public class ValueMapTest {
     @Test
     public void testValueMap() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
-        
+
         ValueMap map = resource1.adaptTo(ValueMap.class);
         assertTrue(map instanceof ValueMap && !(map instanceof ModifiableValueMap));
-        
+
         assertEquals("value1", map.get("prop1"));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testValueMapMap_Readonly() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
-        
+
         ValueMap map = resource1.adaptTo(ValueMap.class);
         map.put("prop1", "value2");
     }
@@ -97,10 +97,10 @@ public class ValueMapTest {
     @Test
     public void testModifiableValueMap() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
-        
+
         ValueMap map = resource1.adaptTo(ModifiableValueMap.class);
         assertTrue(map instanceof ValueMap && map instanceof ModifiableValueMap);
-        
+
         assertEquals("value1", map.get("prop1"));
         map.put("prop1", "value2");
     }

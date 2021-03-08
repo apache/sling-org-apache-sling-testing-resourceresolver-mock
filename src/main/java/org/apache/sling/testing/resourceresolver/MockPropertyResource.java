@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * Resource that wraps a property value.
  */
 class MockPropertyResource extends AbstractResource {
-    
+
     private final String path;
     private final ValueMap props;
     private final String key;

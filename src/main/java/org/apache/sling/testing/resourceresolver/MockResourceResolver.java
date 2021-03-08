@@ -59,9 +59,9 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private final MockResourceResolverFactoryOptions options;
 
     private final MockResourceResolverFactory factory;
-    
+
     private final Map<String,Object> attributes;
-    
+
     private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
     private final List<MockQueryResourceHandler> queryResourcesHandlers = new ArrayList<>();
 
@@ -96,7 +96,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
           urlRemainder = path.substring(urlRemainderPos);
           path = path.substring(0, urlRemainderPos);
         }
-        
+
         // unmangle namespaces
         if (options.isMangleNamespacePrefixes()) {
             path = NamespaceMangler.unmangleNamespaces(path);
@@ -135,7 +135,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
           urlRemainder = path.substring(urlRemainderPos);
           path = path.substring(0, urlRemainderPos);
         }
-        
+
         // mangle namespaces
         if (options.isMangleNamespacePrefixes()) {
             path = NamespaceMangler.mangleNamespaces(path);
@@ -144,11 +144,11 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         // build full path again
         return path + (urlRemainder != null ? urlRemainder : "");
     }
-    
+
     @Override
     public Resource getResource(final @NotNull String path) {
         Resource resource = getResourceInternal(path);
-        
+
         // if not resource found check if this is a reference to a property
         if (resource == null && path != null) {
             String parentPath = ResourceUtil.getParent(path);
@@ -163,15 +163,15 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
                 }
             }
         }
-        
+
         return resource;
     }
-    
+
     private Resource getResourceInternal(final String path) {
         if (path == null) {
             return null;
         }
-        
+
         String normalizedPath = ResourceUtil.normalize(path);
         if (normalizedPath == null) {
             return null;
@@ -321,7 +321,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         if ( properties == null ) {
             properties = new HashMap<String, Object>();
         }
-        
+
         Resource mockResource = new MockResource(path, properties, this);
         this.temporaryResources.put(path, ResourceUtil.getValueMap(mockResource));
         return mockResource;
@@ -436,7 +436,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         }
         return resourceSuperType;
     }
-    
+
     @Override
     public boolean hasChildren(@NotNull Resource resource) {
         return this.listChildren(resource).hasNext();

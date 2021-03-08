@@ -66,7 +66,7 @@ public class FindQueryResourcesTest {
     @Test
     public void testFindResourcesSingleHandler() {
         List<Resource> expected = ImmutableList.of(resource1, resource2);
-        ((MockResourceResolver)resourceResolver).addFindResourceHandler((query, language) -> expected.iterator()); 
+        ((MockResourceResolver)resourceResolver).addFindResourceHandler((query, language) -> expected.iterator());
 
         assertEquals(expected, ImmutableList.copyOf(resourceResolver.findResources("any-query", "any-language")));
     }
@@ -74,12 +74,12 @@ public class FindQueryResourcesTest {
     @Test
     public void testFindResourcesMultipleHandlers() {
         List<Resource> expected1 = ImmutableList.of(resource1);
-        ((MockResourceResolver)resourceResolver).addFindResourceHandler((query, language) -> 
-            StringUtils.equals(query, "q1") ? expected1.iterator() : null); 
+        ((MockResourceResolver)resourceResolver).addFindResourceHandler((query, language) ->
+            StringUtils.equals(query, "q1") ? expected1.iterator() : null);
 
         List<Resource> expected2 = ImmutableList.of(resource2);
-        ((MockResourceResolver)resourceResolver).addFindResourceHandler((query, language) -> 
-            StringUtils.equals(query, "q2") ? expected2.iterator() : null); 
+        ((MockResourceResolver)resourceResolver).addFindResourceHandler((query, language) ->
+            StringUtils.equals(query, "q2") ? expected2.iterator() : null);
 
         assertEquals(expected1, ImmutableList.copyOf(resourceResolver.findResources("q1", "any-language")));
         assertEquals(expected2, ImmutableList.copyOf(resourceResolver.findResources("q2", "any-language")));
@@ -94,7 +94,7 @@ public class FindQueryResourcesTest {
     @Test
     public void testQueryResourcesSingleHandler() {
         List<Map<String,Object>> expected = ImmutableList.of(resource1.getValueMap(), resource2.getValueMap());
-        ((MockResourceResolver)resourceResolver).addQueryResourceHandler((query, language) -> expected.iterator()); 
+        ((MockResourceResolver)resourceResolver).addQueryResourceHandler((query, language) -> expected.iterator());
 
         assertEquals(expected, ImmutableList.copyOf(resourceResolver.queryResources("any-query", "any-language")));
     }
@@ -102,12 +102,12 @@ public class FindQueryResourcesTest {
     @Test
     public void testQueryResourcesMultipleHandlers() {
         List<Map<String,Object>> expected1 = ImmutableList.of(resource1.getValueMap());
-        ((MockResourceResolver)resourceResolver).addQueryResourceHandler((query, language) -> 
-            StringUtils.equals(query, "q1") ? expected1.iterator() : null); 
+        ((MockResourceResolver)resourceResolver).addQueryResourceHandler((query, language) ->
+            StringUtils.equals(query, "q1") ? expected1.iterator() : null);
 
         List<Map<String,Object>> expected2 = ImmutableList.of(resource2.getValueMap());
-        ((MockResourceResolver)resourceResolver).addQueryResourceHandler((query, language) -> 
-            StringUtils.equals(query, "q2") ? expected2.iterator() : null); 
+        ((MockResourceResolver)resourceResolver).addQueryResourceHandler((query, language) ->
+            StringUtils.equals(query, "q2") ? expected2.iterator() : null);
 
         assertEquals(expected1, ImmutableList.copyOf(resourceResolver.queryResources("q1", "any-language")));
         assertEquals(expected2, ImmutableList.copyOf(resourceResolver.queryResources("q2", "any-language")));

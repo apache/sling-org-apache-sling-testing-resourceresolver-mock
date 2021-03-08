@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 
 public class NamespaceManglerTest {
-    
+
     private Map<String, String> TEST_PATHS = ImmutableMap.<String, String>builder()
             .put("/content/aa/bb/content.png", "/content/aa/bb/content.png")
             .put("/content/aa/bb/jcr:content.png", "/content/aa/bb/_jcr_content.png")

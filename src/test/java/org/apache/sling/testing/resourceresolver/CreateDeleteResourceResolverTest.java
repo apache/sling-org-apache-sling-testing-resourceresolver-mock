@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableMap;
  * Tests combinations of create and deletion of resources and conflict detection.
  */
 public class CreateDeleteResourceResolverTest {
-        
+
     private static final Map<String,Object> PROPS1 = ImmutableMap.<String, Object>builder()
             .put("prop1", "value1").build();
     private static final Map<String,Object> PROPS2 = ImmutableMap.<String, Object>builder()
@@ -61,7 +61,7 @@ public class CreateDeleteResourceResolverTest {
         // create new node without commit
         Resource resource = resourceResolver.create(testRoot, "node", PROPS1);
         assertEquals(PROPS1, ResourceUtil.getValueMap(resource));
-        
+
         // delete node without commit
         resourceResolver.delete(resource);
         assertNull(resourceResolver.getResource(testRoot.getPath() + "/node"));
@@ -76,7 +76,7 @@ public class CreateDeleteResourceResolverTest {
         // create new node without commit
         Resource resource = resourceResolver.create(testRoot, "node", PROPS1);
         assertEquals(PROPS1, ResourceUtil.getValueMap(resource));
-        
+
         // delete node without commit
         resourceResolver.delete(resource);
         assertNull(resourceResolver.getResource(testRoot.getPath() + "/node"));
@@ -93,7 +93,7 @@ public class CreateDeleteResourceResolverTest {
         Resource resource = resourceResolver.create(testRoot, "node", PROPS1);
         assertEquals(PROPS1, ResourceUtil.getValueMap(resource));
         resourceResolver.commit();
-        
+
         // delete node without commit
         resourceResolver.delete(resource);
         assertNull(resourceResolver.getResource(testRoot.getPath() + "/node"));
@@ -110,7 +110,7 @@ public class CreateDeleteResourceResolverTest {
         Resource resource = resourceResolver.create(testRoot, "node", PROPS1);
         assertEquals(PROPS1, ResourceUtil.getValueMap(resource));
         resourceResolver.commit();
-        
+
         // delete node with commit
         resourceResolver.delete(resource);
         assertNull(resourceResolver.getResource(testRoot.getPath() + "/node"));

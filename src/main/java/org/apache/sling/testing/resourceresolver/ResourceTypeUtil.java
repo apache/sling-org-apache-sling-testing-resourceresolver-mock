@@ -27,10 +27,10 @@ class ResourceTypeUtil {
 
     /**
      * Returns <code>true</code> if the given resource type are equal.
-     * 
-     * In case the value of any of the given resource types 
+     *
+     * In case the value of any of the given resource types
      * starts with one of the resource resolver's search paths
-     * it is converted to a relative resource type by stripping off 
+     * it is converted to a relative resource type by stripping off
      * the resource resolver's search path before doing the comparison.
      *
      * @param resourceType A resource type

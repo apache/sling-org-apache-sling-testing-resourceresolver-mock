@@ -40,7 +40,7 @@ import org.apache.sling.api.wrappers.DeepReadModifiableValueMapDecorator;
  * </ul>
  */
 public class MockValueMap extends DeepReadModifiableValueMapDecorator implements ModifiableValueMap {
-    
+
     public MockValueMap(Resource resource) {
         this(resource, new HashMap<String, Object>());
     }
@@ -52,7 +52,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
     @SuppressWarnings({ "unchecked", "null", "unused" })
     @Override
     public <T> T get(String name, Class<T> type) {
-        
+
         if (type == InputStream.class) {
             // Support conversion from byte array to InputStream
             byte[] data = get(name, byte[].class);
@@ -68,7 +68,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
         }
         return super.get(name, type);
     }
-    
+
     @Override
     public Object put(String key, Object value) {
         return super.put(key, convertForWrite(value));
@@ -79,10 +79,10 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
     public void putAll(Map<? extends String, ?> map) {
         super.putAll((Map<? extends String, ?>)convertForWriteAll((Map<String, Object>)map));
     }
-    
+
     private static Object convertForWrite(Object value) {
         if (value instanceof Date) {
-            // Store Date values as Calendar values 
+            // Store Date values as Calendar values
             Calendar calendar = Calendar.getInstance();
             calendar.setTime((Date)value);
             value = calendar;
@@ -97,7 +97,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
         }
         return value;
     }
-    
+
     private static Map<String, Object> convertForWriteAll(Map<String, Object> map) {
         Map<String,Object> newMap = new HashMap<String, Object>();
         if (map != null) {
