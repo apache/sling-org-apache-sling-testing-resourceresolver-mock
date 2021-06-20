@@ -181,14 +181,12 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
             }
             final Map<String, Object> tempProps = this.temporaryResources.get(normalizedPath);
             if ( tempProps != null ) {
-                final Resource rsrc = new MockResource(normalizedPath, tempProps, this);
-                return rsrc;
+                return newMockResource(normalizedPath, tempProps, this);
             }
             synchronized ( this.resources ) {
                 final Map<String, Object> props = this.resources.get(normalizedPath);
                 if ( props != null ) {
-                    final Resource rsrc = new MockResource(normalizedPath, props, this);
-                    return rsrc;
+                    return newMockResource(normalizedPath, props, this);
                 }
             }
         } else {
@@ -244,9 +242,16 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         }
         final List<Resource> children = new ArrayList<Resource>();
         for(final Map.Entry<String, Map<String, Object>> e : candidates.entrySet()) {
-            children.add(new MockResource(e.getKey(), e.getValue(), this));
+            children.add(newMockResource(e.getKey(), e.getValue(), this));
         }
         return children.iterator();
+    }
+
+    private Resource newMockResource(final String path, 
+            final Map<String, Object> properties,
+            final ResourceResolver resolver) {
+        return this.options.getMockResourceFactory()
+                    .newMockResource(path, properties, resolver);
     }
 
     @Override
@@ -322,7 +327,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
             properties = new HashMap<String, Object>();
         }
 
-        Resource mockResource = new MockResource(path, properties, this);
+        Resource mockResource = newMockResource(path, properties, this);
         this.temporaryResources.put(path, ResourceUtil.getValueMap(mockResource));
         return mockResource;
     }

@@ -27,6 +27,8 @@ import org.osgi.service.event.EventAdmin;
  */
 public class MockResourceResolverFactoryOptions {
 
+    private MockResourceFactory mockResourceFactory;
+
     private EventAdmin eventAdmin;
 
     private String[] searchPaths = new String[] {"/apps/", "/libs/"};
@@ -60,6 +62,18 @@ public class MockResourceResolverFactoryOptions {
 
     public @NotNull MockResourceResolverFactoryOptions setMangleNamespacePrefixes(boolean mangleNamespacePrefixes) {
         this.mangleNamespacePrefixes = mangleNamespacePrefixes;
+        return this;
+    }
+
+    public @NotNull MockResourceFactory getMockResourceFactory() {
+        if (mockResourceFactory == null) {
+            mockResourceFactory = new DefaultMockResourceFactory();
+        }
+        return mockResourceFactory;
+    }
+    
+    public @NotNull MockResourceResolverFactoryOptions setMockResourceFactory(MockResourceFactory factory) {
+        this.mockResourceFactory = factory;
         return this;
     }
 
