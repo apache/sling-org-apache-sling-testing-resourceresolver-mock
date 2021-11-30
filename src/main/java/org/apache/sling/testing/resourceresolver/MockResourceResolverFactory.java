@@ -18,8 +18,10 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -126,4 +128,10 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
             resolverStack.remove(resolver);
         }
     }
+
+    // Sling API 2.24.0
+    public @NotNull List<String> getSearchPath() {
+        return Arrays.asList(this.options.getSearchPaths());
+    }
+
 }

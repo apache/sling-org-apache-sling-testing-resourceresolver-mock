@@ -45,6 +45,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
@@ -247,7 +248,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         return children.iterator();
     }
 
-    private Resource newMockResource(final String path, 
+    private Resource newMockResource(final String path,
             final Map<String, Object> properties,
             final ResourceResolver resolver) {
         return this.options.getMockResourceFactory()
@@ -519,6 +520,17 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     public Resource move(String srcAbsPath, String destAbsPath) throws PersistenceException {
+        throw new UnsupportedOperationException();
+    }
+
+    // Sling API 2.24.0
+    public boolean orderBefore(@NotNull Resource parent, @NotNull String name,
+            @Nullable String followingSiblingName) throws UnsupportedOperationException, PersistenceException, IllegalArgumentException {
+        throw new UnsupportedOperationException();
+    }
+
+    // Sling API 2.24.0
+    public @NotNull Map<String, Object> getPropertyMap() {
         throw new UnsupportedOperationException();
     }
 
