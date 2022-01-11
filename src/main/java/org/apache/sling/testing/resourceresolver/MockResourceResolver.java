@@ -18,6 +18,7 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -28,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -62,6 +64,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private final MockResourceResolverFactory factory;
 
     private final Map<String,Object> attributes;
+    
+    private Map<String,Object> propertyMap;
 
     private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
     private final List<MockQueryResourceHandler> queryResourcesHandlers = new ArrayList<>();
@@ -272,7 +276,23 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     public void close() {
+        clearPropertyMap();
         this.factory.closed(this);
+    }
+
+    private void clearPropertyMap(){
+        if (propertyMap != null) {
+            for (Entry<String, Object> entry : propertyMap.entrySet()) {
+                if (entry.getValue()  instanceof Closeable) {
+                    try {
+                        ((Closeable) entry.getValue()).close();
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+            propertyMap.clear();
+        }
     }
 
     @Override
@@ -499,6 +519,13 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         queryResourcesHandlers.add(handler);
     }
 
+    // Sling API 2.24.0
+    public @NotNull Map<String, Object> getPropertyMap() {
+        if (propertyMap == null) {
+            propertyMap = new HashMap<>();
+        }
+        return propertyMap;
+    }
 
     // --- unsupported operations ---
 
@@ -529,9 +556,6 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         throw new UnsupportedOperationException();
     }
 
-    // Sling API 2.24.0
-    public @NotNull Map<String, Object> getPropertyMap() {
-        throw new UnsupportedOperationException();
-    }
+
 
 }
