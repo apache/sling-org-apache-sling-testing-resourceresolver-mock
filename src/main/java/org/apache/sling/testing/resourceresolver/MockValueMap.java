@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.wrappers.DeepReadModifiableValueMapDecorator;
+import org.apache.sling.api.wrappers.ValueMapDecorator;
 
 /**
  * ValueMap for mocked resources to mimick JCR-like behavior.
