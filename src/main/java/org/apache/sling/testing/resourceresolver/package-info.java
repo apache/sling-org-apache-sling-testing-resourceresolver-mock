@@ -19,5 +19,5 @@
 /**
  * Apache Sling Testing Resource Resolver Mock
  */
-@org.osgi.annotation.versioning.Version("2.2")
+@org.osgi.annotation.versioning.Version("2.2.1")
 package org.apache.sling.testing.resourceresolver;
