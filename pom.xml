@@ -23,12 +23,12 @@
     <parent>
         <groupId>org.apache.sling</groupId>
         <artifactId>sling-bundle-parent</artifactId>
-        <version>46</version>
+        <version>47</version>
         <relativePath />
     </parent>
 
     <artifactId>org.apache.sling.testing.resourceresolver-mock</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
 
     <name>Apache Sling Testing Resource Resolver Mock</name>
     <description>
@@ -122,13 +122,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.7.0</version>
+            <version>4.5.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.6</version>
+            <version>3.9</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -138,22 +138,22 @@
             <dependency>
                 <groupId>org.apache.sling</groupId>
                 <artifactId>org.apache.sling.api</artifactId>
-                <version>2.21.0</version>
+                <version>2.22.0</version>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.service.event</artifactId>
-                <version>1.3.1</version>
+                <version>1.4.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.jackrabbit</groupId>
                 <artifactId>jackrabbit-jcr-commons</artifactId>
-                <version>2.16.0</version>
+                <version>2.20.1</version>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
@@ -163,7 +163,7 @@
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.util.function</artifactId>
-                <version>1.0.0</version>
+                <version>1.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -179,12 +179,12 @@
                     <dependency>
                         <groupId>org.apache.sling</groupId>
                         <artifactId>org.apache.sling.api</artifactId>
-                        <version>2.24.0</version>
+                        <version>2.25.0</version>
                     </dependency>
                     <dependency>
                         <groupId>org.apache.jackrabbit</groupId>
                         <artifactId>jackrabbit-jcr-commons</artifactId>
-                        <version>2.19.3</version>
+                        <version>2.21.9</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>

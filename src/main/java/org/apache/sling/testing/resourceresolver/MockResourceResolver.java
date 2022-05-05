@@ -64,7 +64,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private final MockResourceResolverFactory factory;
 
     private final Map<String,Object> attributes;
-    
+
     private Map<String,Object> propertyMap;
 
     private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
@@ -220,7 +220,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public String @NotNull [] getSearchPath() {
+    public @NotNull String[] getSearchPath() {
         return this.options.getSearchPaths();
     }
 
