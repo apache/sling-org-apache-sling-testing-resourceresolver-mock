@@ -19,6 +19,7 @@
 package org.apache.sling.testing.resourceresolver;
 
 import org.apache.sling.api.resource.AbstractResource;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
@@ -34,7 +35,7 @@ class MockPropertyResource extends AbstractResource {
     private final ValueMap props;
     private final String key;
     private final ResourceResolver resolver;
-    private final ResourceMetadata rm = new ResourceMetadata();
+    private final ResourceMetadata rm;
 
     public MockPropertyResource(final String path,
             final ValueMap props,
@@ -42,6 +43,15 @@ class MockPropertyResource extends AbstractResource {
         this.path = path;
         this.props = props;
         this.key = ResourceUtil.getName(path);
+        this.rm = new ResourceMetadata();
+        this.resolver = resolver;
+    }
+
+    private MockPropertyResource(String path, ValueMap props, String key, ResourceMetadata rm, ResourceResolver resolver) {
+        this.path = path;
+        this.props = props;
+        this.key = key;
+        this.rm = rm;
         this.resolver = resolver;
     }
 
@@ -80,6 +90,15 @@ class MockPropertyResource extends AbstractResource {
             return value;
         }
         return super.adaptTo(type);
+    }
+
+    /**
+     * Creates a new instance for this mock resource with referencing the given resoruce resolver (instead of the initial MockResourceResolver).
+     * @param resourceResolver Resource resolver
+     * @return Same resource with different resource resolver
+     */
+    Resource forResourceProvider(ResourceResolver resourceResolver) {
+        return new MockPropertyResource(this.path, this.props, this.key, this.rm, resourceResolver);
     }
 
 }

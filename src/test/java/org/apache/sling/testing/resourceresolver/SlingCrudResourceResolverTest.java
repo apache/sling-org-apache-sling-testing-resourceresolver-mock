@@ -297,7 +297,7 @@ public class SlingCrudResourceResolverTest {
 
     @Test
     public void testGetParentResourceType() throws PersistenceException {
-        Resource r1 = resourceResolver.create(testRoot, "resource1", ImmutableMap.<String, Object>of());
+        Resource r1 = resourceResolver.create(testRoot, "resource1", ValueMap.EMPTY);
         Resource r2 = resourceResolver.create(testRoot, "resource2", ImmutableMap.<String, Object>of(
                 "sling:resourceSuperType", testRoot.getPath() + "/resource1"));
         Resource r3 = resourceResolver.create(testRoot, "resource3", ImmutableMap.<String, Object>of(
@@ -321,7 +321,38 @@ public class SlingCrudResourceResolverTest {
 
     @Test
     public void testResourceWithoutResourceType() throws PersistenceException {
-        Resource noResourceType = resourceResolver.create(testRoot, "noResourceType", ImmutableMap.<String, Object>of());
+        Resource noResourceType = resourceResolver.create(testRoot, "noResourceType", ValueMap.EMPTY);
         assertNotNull(noResourceType.getResourceType());
     }
+
+    @Test
+    public void testHasChanges_CreateResource() throws PersistenceException {
+        assertFalse(resourceResolver.hasChanges());
+        resourceResolver.create(testRoot, "res1", ValueMap.EMPTY);
+        assertTrue(resourceResolver.hasChanges());
+        resourceResolver.commit();
+        assertFalse(resourceResolver.hasChanges());
+    }
+
+    @Test
+    public void testHasChanges_SetProperties() throws PersistenceException {
+        assertFalse(resourceResolver.hasChanges());
+        Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
+        ModifiableValueMap props = resource1.adaptTo(ModifiableValueMap.class);
+        props.put("newProp", "value1");
+        assertTrue(resourceResolver.hasChanges());
+        resourceResolver.commit();
+        assertFalse(resourceResolver.hasChanges());
+    }
+
+    @Test
+    public void testHasChanges_DeleteResource() throws PersistenceException {
+        assertFalse(resourceResolver.hasChanges());
+        Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
+        resourceResolver.delete(resource1);
+        assertTrue(resourceResolver.hasChanges());
+        resourceResolver.commit();
+        assertFalse(resourceResolver.hasChanges());
+    }
+
 }

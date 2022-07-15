@@ -20,6 +20,9 @@ package org.apache.sling.testing.resourceresolver;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
@@ -40,6 +43,7 @@ import org.osgi.service.event.EventAdmin;
 
 /**
  * This is a wrapper around {@link MockResourceResolver} to act as resource provider.
+ * All resources returned by this provider return the resolver from the resolve context instead of the {@link MockResourceResolver}.
  */
 @Component(service = ResourceProvider.class, property = {
         ResourceProvider.PROPERTY_NAME + "=MockResourceProvider",
@@ -73,13 +77,23 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
     public @Nullable Resource getResource(@NotNull ResolveContext<Void> ctx,
             @NotNull String path, @NotNull ResourceContext resourceContext,
             @Nullable Resource parent) {
-        return resourceResolver.getResource(path);
+        Resource resource = resourceResolver.getResource(path);
+        if (resource != null) {
+            return attachResource(ctx, resource);
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
+    @SuppressWarnings("null")
     public @Nullable Iterator<Resource> listChildren(
             @NotNull ResolveContext<Void> ctx, @NotNull Resource parent) {
-        return resourceResolver.listChildren(parent);
+        Iterator<Resource> children = resourceResolver.listChildren(parent);
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(children, Spliterator.ORDERED), false)
+                .map(resource -> attachResource(ctx, resource))
+                .iterator();
     }
 
     @Override
@@ -94,7 +108,8 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
         if (parent == null) {
             throw new PersistenceException("Parent does not exist: " + parentPath);
         }
-        return resourceResolver.create(parent, name, properties);
+        Resource newResource = resourceResolver.create(parent, name, properties);
+        return attachResource(ctx, newResource);
     }
 
     @Override
@@ -115,6 +130,18 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
     @Override
     public boolean hasChanges(@NotNull ResolveContext<Void> ctx) {
         return resourceResolver.hasChanges();
+    }
+
+    private @NotNull Resource attachResource(@NotNull ResolveContext<Void> ctx, @NotNull Resource resource) {
+        if (resource instanceof MockResource) {
+            return ((MockResource)resource).forResourceProvider(ctx.getResourceResolver());
+        }
+        else if (resource instanceof MockPropertyResource) {
+            return ((MockPropertyResource)resource).forResourceProvider(ctx.getResourceResolver());
+        }
+        else {
+            return resource;
+        }
     }
 
 }

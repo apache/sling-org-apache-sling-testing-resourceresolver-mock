@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.wrappers.DeepReadModifiableValueMapDecorator;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 
@@ -42,12 +43,27 @@ import org.apache.sling.api.wrappers.ValueMapDecorator;
  */
 public class MockValueMap extends DeepReadModifiableValueMapDecorator implements ModifiableValueMap {
 
+    private final Resource resource;
+    private final MockResourceResolver mockResourceResolver;
+
     public MockValueMap(Resource resource) {
-        this(resource, new HashMap<String, Object>());
+        this(resource, new HashMap<>());
     }
 
     public MockValueMap(Resource resource, Map<String,Object> map) {
         super(resource, new ValueMapDecorator(convertForWriteAll(map)));
+        this.resource = resource;
+        this.mockResourceResolver = getMockResourceResolver(resource);
+    }
+
+    private static MockResourceResolver getMockResourceResolver(Resource resource) {
+        ResourceResolver resolver = resource.getResourceResolver();
+        if (resolver instanceof MockResourceResolver) {
+            return (MockResourceResolver)resolver;
+        }
+        else {
+            return null;
+        }
     }
 
     @SuppressWarnings({ "unchecked", "null", "unused" })
@@ -72,13 +88,15 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
 
     @Override
     public Object put(String key, Object value) {
+        markResourceAsChanged();
         return super.put(key, convertForWrite(value));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void putAll(Map<? extends String, ?> map) {
-        super.putAll((Map<? extends String, ?>)convertForWriteAll((Map<String, Object>)map));
+        markResourceAsChanged();
+        super.putAll(convertForWriteAll((Map<String, Object>)map));
     }
 
     private static Object convertForWrite(Object value) {
@@ -107,6 +125,15 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
             }
         }
         return newMap;
+    }
+
+    /**
+     * Put access to the value map - mark the resource as changed.
+     */
+    private void markResourceAsChanged() {
+        if (this.mockResourceResolver != null) {
+            this.mockResourceResolver.addChanged(resource.getPath(), this);
+        }
     }
 
 }
