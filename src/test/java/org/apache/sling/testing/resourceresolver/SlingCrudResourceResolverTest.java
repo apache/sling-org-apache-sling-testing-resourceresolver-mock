@@ -74,7 +74,7 @@ public class SlingCrudResourceResolverTest {
 
     @Before
     public final void setUp() throws IOException, LoginException {
-        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
+        resourceResolver = createResourceResolver();
 
         Resource root = resourceResolver.getResource("/");
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
@@ -100,6 +100,10 @@ public class SlingCrudResourceResolverTest {
         resourceResolver.create(node1, "node12", ValueMap.EMPTY);
 
         resourceResolver.commit();
+    }
+
+    protected ResourceResolver createResourceResolver() throws LoginException {
+        return new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @Test
@@ -317,7 +321,7 @@ public class SlingCrudResourceResolverTest {
 
     @Test
     public void testResourceWithoutResourceType() throws PersistenceException {
-        Resource noResourceType = resourceResolver.create(testRoot, "/noResourceType", ImmutableMap.<String, Object>of());
+        Resource noResourceType = resourceResolver.create(testRoot, "noResourceType", ImmutableMap.<String, Object>of());
         assertNotNull(noResourceType.getResourceType());
     }
 }

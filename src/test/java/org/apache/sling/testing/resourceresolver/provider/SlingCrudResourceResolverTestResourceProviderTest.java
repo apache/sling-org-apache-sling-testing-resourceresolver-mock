@@ -16,41 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.testing.resourceresolver;
-
-import java.io.IOException;
+package org.apache.sling.testing.resourceresolver.provider;
 
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.sling.testing.mock.sling.ResourceResolverType;
+import org.apache.sling.testing.mock.sling.junit.SlingContext;
+import org.apache.sling.testing.resourceresolver.MockResourceProvider;
+import org.apache.sling.testing.resourceresolver.SlingCrudResourceResolverTest;
+import org.junit.Rule;
 
-public class RootResourceTypeTest {
+public class SlingCrudResourceResolverTestResourceProviderTest extends SlingCrudResourceResolverTest {
 
-    private ResourceResolver resourceResolver;
+    @Rule
+    public SlingContext context = new SlingContext(ResourceResolverType.NONE);
 
-    @Before
-    public final void setUp() throws IOException, LoginException {
-        resourceResolver = createResourceResolver();
-    }
-
+    @Override
     protected ResourceResolver createResourceResolver() throws LoginException {
-        return new MockResourceResolverFactory().getResourceResolver(null);
-    }
-
-    @Test
-    @SuppressWarnings("null")
-    public void testIsResourceResolver() {
-        Resource root= resourceResolver.getResource("/");
-        Assert.assertTrue(root.isResourceType("rep:root"));
-    }
-
-    @Test
-    public void testGetRootParent() {
-        Resource rootParent = resourceResolver.getResource("/..");
-        Assert.assertNull(rootParent);
+        context.registerInjectActivateService(MockResourceProvider.class);
+        return context.resourceResolver();
     }
 
 }

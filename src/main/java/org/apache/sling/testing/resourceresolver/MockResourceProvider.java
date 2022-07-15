@@ -86,6 +86,7 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
     public @NotNull Resource create(@NotNull ResolveContext<Void> ctx, String path,
             Map<String, Object> properties) throws PersistenceException {
         String parentPath = ResourceUtil.getParent(path);
+        String name = ResourceUtil.getName(path);
         if (parentPath == null) {
             throw new PersistenceException("Invalid path: " + path);
         }
@@ -93,7 +94,7 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
         if (parent == null) {
             throw new PersistenceException("Parent does not exist: " + parentPath);
         }
-        return resourceResolver.create(parent, path, properties);
+        return resourceResolver.create(parent, name, properties);
     }
 
     @Override

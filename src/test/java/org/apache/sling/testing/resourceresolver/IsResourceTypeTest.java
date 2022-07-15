@@ -39,8 +39,12 @@ public class IsResourceTypeTest {
     private ResourceResolver resolver;
 
     @Before
-    public final void setUp() throws LoginException {
-        resolver = new MockResourceResolverFactory().getResourceResolver(null);
+    public void setUp() throws Exception {
+        resolver = createResourceResolver();
+    }
+
+    protected ResourceResolver createResourceResolver() throws LoginException {
+        return new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @Test

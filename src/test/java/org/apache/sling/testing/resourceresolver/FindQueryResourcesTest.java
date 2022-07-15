@@ -21,7 +21,6 @@ package org.apache.sling.testing.resourceresolver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +45,8 @@ public class FindQueryResourcesTest {
     private Resource resource2;
 
     @Before
-    public void setUp() throws IOException, LoginException {
-        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
+    public void setUp() throws Exception {
+        resourceResolver = createResourceResolver();
 
         MockHelper.create(resourceResolver)
             .resource("/resource1").p("prop1", "value1")
@@ -55,6 +54,10 @@ public class FindQueryResourcesTest {
             .commit();
         resource1 = resourceResolver.getResource("/resource1");
         resource2 = resourceResolver.getResource("/resource2");
+    }
+
+    protected ResourceResolver createResourceResolver() throws LoginException {
+        return new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @Test

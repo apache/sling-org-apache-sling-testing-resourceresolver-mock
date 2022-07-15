@@ -54,9 +54,13 @@ public class NtFileResourceTest {
 
     @Before
     public final void setUp() throws IOException, LoginException {
-        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
+        resourceResolver = createResourceResolver();
         Resource root = resourceResolver.getResource("/");
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
+    }
+
+    protected ResourceResolver createResourceResolver() throws LoginException {
+        return new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @Test

@@ -21,7 +21,6 @@ package org.apache.sling.testing.resourceresolver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.apache.sling.api.resource.LoginException;
@@ -50,10 +49,14 @@ public class CreateDeleteResourceResolverTest {
 
     @Before
     @SuppressWarnings("null")
-    public final void setUp() throws IOException, LoginException {
-        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
+    public final void setUp() throws Exception {
+        resourceResolver = createResourceResolver();
         Resource root = resourceResolver.getResource("/");
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
+    }
+
+    protected ResourceResolver createResourceResolver() throws LoginException {
+        return new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @Test
