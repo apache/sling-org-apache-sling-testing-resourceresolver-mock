@@ -142,7 +142,7 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public @Nullable <AdapterType> @Nullable AdapterType adaptTo(@NotNull ResolveContext<Void> ctx, @NotNull Class<AdapterType> type) {
+    public @Nullable <AdapterType> AdapterType adaptTo(@NotNull ResolveContext<Void> ctx, @NotNull Class<AdapterType> type) {
         if (type == MockResourceResolver.class) {
             return (AdapterType)mockResourceResolver;
         }
