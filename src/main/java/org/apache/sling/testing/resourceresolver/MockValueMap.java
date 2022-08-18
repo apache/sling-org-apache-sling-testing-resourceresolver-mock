@@ -99,6 +99,18 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
         super.putAll(convertForWriteAll((Map<String, Object>)map));
     }
 
+    @Override
+    public Object remove(Object key) {
+        markResourceAsChanged();
+        return super.remove(key);
+    }
+
+    @Override
+    public void clear() {
+        markResourceAsChanged();
+        super.clear();
+    }
+
     private static Object convertForWrite(Object value) {
         if (value instanceof Date) {
             // Store Date values as Calendar values

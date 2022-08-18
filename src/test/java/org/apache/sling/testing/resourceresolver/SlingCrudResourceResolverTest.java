@@ -346,6 +346,17 @@ public class SlingCrudResourceResolverTest {
     }
 
     @Test
+    public void testHasChanges_RemoveProperty() throws PersistenceException {
+        assertFalse(resourceResolver.hasChanges());
+        Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
+        ModifiableValueMap props = resource1.adaptTo(ModifiableValueMap.class);
+        props.remove("stringProp");
+        assertTrue(resourceResolver.hasChanges());
+        resourceResolver.commit();
+        assertFalse(resourceResolver.hasChanges());
+    }
+
+    @Test
     public void testHasChanges_DeleteResource() throws PersistenceException {
         assertFalse(resourceResolver.hasChanges());
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
