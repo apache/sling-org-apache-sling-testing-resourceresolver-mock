@@ -27,9 +27,9 @@ import java.util.stream.StreamSupport;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ResourceUtil;
+import org.apache.sling.spi.resource.provider.QueryLanguageProvider;
 import org.apache.sling.spi.resource.provider.ResolveContext;
 import org.apache.sling.spi.resource.provider.ResourceContext;
 import org.apache.sling.spi.resource.provider.ResourceProvider;
@@ -49,6 +49,7 @@ import org.osgi.service.event.EventAdmin;
         ResourceProvider.PROPERTY_NAME + "=MockResourceProvider",
         ResourceProvider.PROPERTY_ROOT + "=/",
         ResourceProvider.PROPERTY_MODIFIABLE + ":Boolean=true",
+        ResourceProvider.PROPERTY_ADAPTABLE + ":Boolean=true",
         // although we do not really support authentication, it's required for a modifiable resource provider
         ResourceProvider.PROPERTY_AUTHENTICATE + "=" + ResourceProvider.AUTHENTICATE_REQUIRED
 })
@@ -57,7 +58,8 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     private EventAdmin eventAdmin;
 
-    private ResourceResolver resourceResolver;
+    private MockResourceResolver mockResourceResolver;
+    private MockQueryLanguageProvider mockQueryLanguageProvider;
 
     @Activate
     private void activate() {
@@ -66,18 +68,19 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
         options.setEventAdmin(eventAdmin);
         ResourceResolverFactory resourceResolverFactory = new MockResourceResolverFactory(options);
         try {
-            this.resourceResolver = resourceResolverFactory.getResourceResolver(null);
+            this.mockResourceResolver = (MockResourceResolver)resourceResolverFactory.getResourceResolver(null);
         }
         catch (LoginException ex) {
             throw new RuntimeException(ex);
         }
+        this.mockQueryLanguageProvider = new MockQueryLanguageProvider(mockResourceResolver);
     }
 
     @Override
     public @Nullable Resource getResource(@NotNull ResolveContext<Void> ctx,
             @NotNull String path, @NotNull ResourceContext resourceContext,
             @Nullable Resource parent) {
-        Resource resource = resourceResolver.getResource(path);
+        Resource resource = mockResourceResolver.getResource(path);
         if (resource != null) {
             return attachResource(ctx, resource);
         }
@@ -90,7 +93,7 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
     @SuppressWarnings("null")
     public @Nullable Iterator<Resource> listChildren(
             @NotNull ResolveContext<Void> ctx, @NotNull Resource parent) {
-        Iterator<Resource> children = resourceResolver.listChildren(parent);
+        Iterator<Resource> children = mockResourceResolver.listChildren(parent);
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(children, Spliterator.ORDERED), false)
                 .map(resource -> attachResource(ctx, resource))
                 .iterator();
@@ -104,32 +107,46 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
         if (parentPath == null) {
             throw new PersistenceException("Invalid path: " + path);
         }
-        Resource parent = resourceResolver.getResource(parentPath);
+        Resource parent = mockResourceResolver.getResource(parentPath);
         if (parent == null) {
             throw new PersistenceException("Parent does not exist: " + parentPath);
         }
-        Resource newResource = resourceResolver.create(parent, name, properties);
+        Resource newResource = mockResourceResolver.create(parent, name, properties);
         return attachResource(ctx, newResource);
     }
 
     @Override
     public void delete(@NotNull ResolveContext<Void> ctx, @NotNull Resource resource) throws PersistenceException {
-        resourceResolver.delete(resource);
+        mockResourceResolver.delete(resource);
     }
 
     @Override
     public void revert(@NotNull ResolveContext<Void> ctx) {
-        resourceResolver.revert();
+        mockResourceResolver.revert();
     }
 
     @Override
     public void commit(@NotNull ResolveContext<Void> ctx) throws PersistenceException {
-        resourceResolver.commit();
+        mockResourceResolver.commit();
     }
 
     @Override
     public boolean hasChanges(@NotNull ResolveContext<Void> ctx) {
-        return resourceResolver.hasChanges();
+        return mockResourceResolver.hasChanges();
+    }
+
+    @Override
+    public @Nullable QueryLanguageProvider<Void> getQueryLanguageProvider() {
+        return mockQueryLanguageProvider;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @Nullable <AdapterType> @Nullable AdapterType adaptTo(@NotNull ResolveContext<Void> ctx, @NotNull Class<AdapterType> type) {
+        if (type == MockResourceResolver.class) {
+            return (AdapterType)mockResourceResolver;
+        }
+        return super.adaptTo(ctx, type);
     }
 
     private @NotNull Resource attachResource(@NotNull ResolveContext<Void> ctx, @NotNull Resource resource) {
