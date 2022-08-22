@@ -24,8 +24,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
-import javax.jcr.query.Query;
-
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceWrapper;
@@ -39,12 +37,11 @@ class MockQueryLanguageProvider implements QueryLanguageProvider<Void> {
 
     private final MockResourceResolver mockResourceResolver;
 
-    @SuppressWarnings("deprecation")
     private static final String[] SUPPORTED_LANGUAGES = {
-            Query.XPATH,
-            Query.SQL,
-            Query.JCR_SQL2,
-            Query.JCR_SQL2
+            "xpath",
+            "sql",
+            "JCR-SQL2",
+            "JCR-JQOM"
     };
 
     MockQueryLanguageProvider(MockResourceResolver mockResourceResolver) {
