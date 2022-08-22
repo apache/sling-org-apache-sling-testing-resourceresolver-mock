@@ -36,7 +36,7 @@ public class MockResource extends AbstractResource {
 
     private final ValueMap props;
 
-    private final ResourceMetadata rm = new ResourceMetadata();
+    private final ResourceMetadata rm;
 
     private final ResourceResolver resolver;
 
@@ -52,7 +52,8 @@ public class MockResource extends AbstractResource {
             final ResourceResolver resolver) {
         this.resolver = resolver;
         this.path = path;
-        rm.setResolutionPath(path);
+        this.rm = new ResourceMetadata();
+        this.rm.setResolutionPath(path);
         if (props instanceof MockValueMap) {
             this.props = (MockValueMap)props;
         }
@@ -62,6 +63,13 @@ public class MockResource extends AbstractResource {
         else {
             this.props = new MockValueMap(this, props);
         }
+    }
+
+    private MockResource(String path, ValueMap props, ResourceMetadata rm, ResourceResolver resolver) {
+        this.path = path;
+        this.props = props;
+        this.rm = rm;
+        this.resolver = resolver;
     }
 
     @Override
@@ -105,7 +113,6 @@ public class MockResource extends AbstractResource {
             return (AdapterType)new ReadonlyValueMapDecorator(this.props);
         }
         else if ( type == ModifiableValueMap.class ) {
-            ((MockResourceResolver)this.resolver).addChanged(this.path, this.props);
             return (AdapterType)this.props;
         }
         else if ( type == InputStream.class ) {
@@ -143,6 +150,15 @@ public class MockResource extends AbstractResource {
     @Override
     public String toString() {
         return "MockResource [path=" + path + ", props=" + props + "]";
+    }
+
+    /**
+     * Creates a new instance for this mock resource with referencing the given resoruce resolver (instead of the initial MockResourceResolver).
+     * @param resourceResolver Resource resolver
+     * @return Same resource with different resource resolver
+     */
+    Resource forResourceProvider(ResourceResolver resourceResolver) {
+        return new MockResource(this.path, this.props, this.rm, resourceResolver);
     }
 
 }

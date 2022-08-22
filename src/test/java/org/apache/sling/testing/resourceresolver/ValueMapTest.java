@@ -45,7 +45,7 @@ public class ValueMapTest {
 
     @Before
     public final void setUp() throws IOException, LoginException {
-        resourceResolver = new MockResourceResolverFactory().getResourceResolver(null);
+        resourceResolver = createResourceResolver();
 
         Resource root = resourceResolver.getResource("/");
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
@@ -54,6 +54,10 @@ public class ValueMapTest {
             ImmutableMap.<String, Object>builder()
                 .put("prop1", "value1")
                 .build());
+    }
+
+    protected ResourceResolver createResourceResolver() throws LoginException {
+        return new MockResourceResolverFactory().getResourceResolver(null);
     }
 
     @SuppressWarnings("unchecked")
