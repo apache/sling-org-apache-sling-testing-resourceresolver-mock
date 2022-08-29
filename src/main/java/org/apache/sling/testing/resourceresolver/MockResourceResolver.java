@@ -520,7 +520,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
      * The result of the first handler that returns a non-null result is used.
      * If no handler delivers a result, an empty result is returned.
      * @param handler Handler
-     * @deprecated Please use {@link MockFindQueryResources#addQueryResourceHandler(ResourceResolver, MockFindResourcesHandler)}
+     * @deprecated Please use {@link MockFindQueryResources#addQueryResourceHandler(ResourceResolver, MockQueryResourceHandler)}
      */
     @Deprecated
     public void addQueryResourceHandler(@NotNull MockQueryResourceHandler handler) {
