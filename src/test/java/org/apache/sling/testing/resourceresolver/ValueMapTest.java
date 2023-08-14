@@ -32,8 +32,6 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Test different ValueMap variants.
  */
@@ -51,9 +49,8 @@ public class ValueMapTest {
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
 
         resourceResolver.create(testRoot, "node1",
-            ImmutableMap.<String, Object>builder()
-                .put("prop1", "value1")
-                .build());
+            Map.<String, Object>of(
+                "prop1", "value1"));
     }
 
     protected ResourceResolver createResourceResolver() throws LoginException {

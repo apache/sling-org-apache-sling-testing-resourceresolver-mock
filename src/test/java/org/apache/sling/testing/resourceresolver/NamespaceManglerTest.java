@@ -24,15 +24,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 public class NamespaceManglerTest {
 
-    private Map<String, String> TEST_PATHS = ImmutableMap.<String, String>builder()
-            .put("/content/aa/bb/content.png", "/content/aa/bb/content.png")
-            .put("/content/aa/bb/jcr:content.png", "/content/aa/bb/_jcr_content.png")
-            .put("/content/aa/bb/jcr:content/anotherpath/xyz:abc", "/content/aa/bb/_jcr_content/anotherpath/_xyz_abc")
-            .build();
+    private Map<String, String> TEST_PATHS = Map.<String, String>of(
+            "/content/aa/bb/content.png", "/content/aa/bb/content.png",
+            "/content/aa/bb/jcr:content.png", "/content/aa/bb/_jcr_content.png",
+            "/content/aa/bb/jcr:content/anotherpath/xyz:abc", "/content/aa/bb/_jcr_content/anotherpath/_xyz_abc");
 
     @Test
     public void testMangleNamespaces() throws Exception {

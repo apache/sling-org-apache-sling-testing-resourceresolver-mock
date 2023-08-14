@@ -32,7 +32,10 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.sling.api.resource.LoginException;
@@ -45,9 +48,6 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 /**
  * Implements simple write and read resource and values test.
@@ -80,23 +80,21 @@ public class SlingCrudResourceResolverTest {
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
 
         Resource node1 = resourceResolver.create(testRoot, "node1",
-            ImmutableMap.<String, Object>builder()
-                .put(MockResource.JCR_PRIMARYTYPE, NT_UNSTRUCTURED)
-                .put("stringProp", STRING_VALUE)
-                .put("stringArrayProp", STRING_ARRAY_VALUE)
-                .put("integerProp", INTEGER_VALUE)
-                .put("longProp", LONG_VALUE)
-                .put("doubleProp", DOUBLE_VALUE)
-                .put("booleanProp", BOOLEAN_VALUE)
-                .put("bigDecimalProp", BIGDECIMAL_VALUE)
-                .put("dateProp", DATE_VALUE)
-                .put("calendarProp", CALENDAR_VALUE)
-                .put("binaryProp", new ByteArrayInputStream(BINARY_VALUE))
-                .build());
+            Map.ofEntries(
+                Map.entry(MockResource.JCR_PRIMARYTYPE, NT_UNSTRUCTURED),
+                Map.entry("stringProp", STRING_VALUE),
+                Map.entry("stringArrayProp", STRING_ARRAY_VALUE),
+                Map.entry("integerProp", INTEGER_VALUE),
+                Map.entry("longProp", LONG_VALUE),
+                Map.entry("doubleProp", DOUBLE_VALUE),
+                Map.entry("booleanProp", BOOLEAN_VALUE),
+                Map.entry("bigDecimalProp", BIGDECIMAL_VALUE),
+                Map.entry("dateProp", DATE_VALUE),
+                Map.entry("calendarProp", CALENDAR_VALUE),
+                Map.entry("binaryProp", new ByteArrayInputStream(BINARY_VALUE))));
 
-        resourceResolver.create(node1, "node11", ImmutableMap.<String, Object>builder()
-                .put("stringProp11", STRING_VALUE)
-                .build());
+        resourceResolver.create(node1, "node11", Map.<String, Object>of(
+                "stringProp11", STRING_VALUE));
         resourceResolver.create(node1, "node12", ValueMap.EMPTY);
 
         resourceResolver.commit();
@@ -208,7 +206,7 @@ public class SlingCrudResourceResolverTest {
     public void testListChildren() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
 
-        List<Resource> children = Lists.newArrayList(resource1.listChildren());
+        List<Resource> children = IteratorUtils.toList(resource1.listChildren());
         assertEquals(2, children.size());
         assertEquals("node11", children.get(0).getName());
         assertEquals("node12", children.get(1).getName());
@@ -218,11 +216,11 @@ public class SlingCrudResourceResolverTest {
     public void testListChildren_RootNode() throws IOException {
         Resource resource1 = resourceResolver.getResource("/");
 
-        List<Resource> children = Lists.newArrayList(resource1.listChildren());
+        List<Resource> children = IteratorUtils.toList(resource1.listChildren());
         assertEquals(1, children.size());
         assertEquals("test", children.get(0).getName());
 
-        children = Lists.newArrayList(resource1.getChildren());
+        children = IterableUtils.toList(resource1.getChildren());
         assertEquals(1, children.size());
         assertEquals("test", children.get(0).getName());
     }
@@ -298,11 +296,11 @@ public class SlingCrudResourceResolverTest {
     @Test
     public void testGetParentResourceType() throws PersistenceException {
         Resource r1 = resourceResolver.create(testRoot, "resource1", ValueMap.EMPTY);
-        Resource r2 = resourceResolver.create(testRoot, "resource2", ImmutableMap.<String, Object>of(
+        Resource r2 = resourceResolver.create(testRoot, "resource2", Map.<String, Object>of(
                 "sling:resourceSuperType", testRoot.getPath() + "/resource1"));
-        Resource r3 = resourceResolver.create(testRoot, "resource3", ImmutableMap.<String, Object>of(
+        Resource r3 = resourceResolver.create(testRoot, "resource3", Map.<String, Object>of(
                 "sling:resourceType", testRoot.getPath() + "/resource2"));
-        Resource r4 = resourceResolver.create(testRoot, "resource4", ImmutableMap.<String, Object>of(
+        Resource r4 = resourceResolver.create(testRoot, "resource4", Map.<String, Object>of(
                 "sling:resourceSuperType", testRoot.getPath() + "/resource2"));
 
         assertNull(resourceResolver.getParentResourceType(r1));
