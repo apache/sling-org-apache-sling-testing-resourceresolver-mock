@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.LoginException;
@@ -37,8 +38,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Implements simple write and read resource and values test.
@@ -65,13 +64,11 @@ public class NtFileResourceTest {
 
     @Test
     public void testNtFile() throws IOException {
-        Resource file = resourceResolver.create(testRoot, "ntFile", ImmutableMap.<String, Object>builder()
-                .put(JCR_PRIMARYTYPE, NT_FILE)
-                .build());
-        resourceResolver.create(file, JCR_CONTENT, ImmutableMap.<String, Object>builder()
-            .put(JCR_PRIMARYTYPE, NT_RESOURCE)
-            .put(JCR_DATA, new ByteArrayInputStream(BINARY_VALUE))
-            .build());
+        Resource file = resourceResolver.create(testRoot, "ntFile", Map.<String, Object>of(
+                JCR_PRIMARYTYPE, NT_FILE));
+        resourceResolver.create(file, JCR_CONTENT, Map.<String, Object>of(
+            JCR_PRIMARYTYPE, NT_RESOURCE,
+            JCR_DATA, new ByteArrayInputStream(BINARY_VALUE)));
 
         String path = testRoot.getPath() + "/ntFile";
         Resource resource = resourceResolver.getResource(path);
@@ -84,10 +81,9 @@ public class NtFileResourceTest {
 
     @Test
     public void testNtResource() throws IOException {
-        resourceResolver.create(testRoot, "ntResource", ImmutableMap.<String, Object>builder()
-                .put(JCR_PRIMARYTYPE, NT_RESOURCE)
-                .put(JCR_DATA, new ByteArrayInputStream(BINARY_VALUE))
-                .build());
+        resourceResolver.create(testRoot, "ntResource", Map.<String, Object>of(
+                JCR_PRIMARYTYPE, NT_RESOURCE,
+                JCR_DATA, new ByteArrayInputStream(BINARY_VALUE)));
 
         String path = testRoot.getPath() + "/ntResource";
         Resource resource = resourceResolver.getResource(path);

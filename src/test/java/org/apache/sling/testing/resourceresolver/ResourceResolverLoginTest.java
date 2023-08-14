@@ -30,14 +30,12 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Test different variants of login for resource resolver.
  */
 public class ResourceResolverLoginTest {
 
-    private static final Map<String,Object> AUTH_INFO = ImmutableMap.<String, Object>of(
+    private static final Map<String,Object> AUTH_INFO = Map.<String, Object>of(
                 ResourceResolverFactory.USER, "myUser");
 
     private MockResourceResolverFactory factory;

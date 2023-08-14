@@ -32,17 +32,15 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Tests combinations of create and deletion of resources and conflict detection.
  */
 public class CreateDeleteResourceResolverTest {
 
-    private static final Map<String,Object> PROPS1 = ImmutableMap.<String, Object>builder()
-            .put("prop1", "value1").build();
-    private static final Map<String,Object> PROPS2 = ImmutableMap.<String, Object>builder()
-            .put("prop2", "value2").build();
+    private static final Map<String,Object> PROPS1 = Map.<String, Object>of(
+            "prop1", "value1");
+    private static final Map<String,Object> PROPS2 = Map.<String, Object>of(
+            "prop2", "value2");
 
     private ResourceResolver resourceResolver;
     private Resource testRoot;

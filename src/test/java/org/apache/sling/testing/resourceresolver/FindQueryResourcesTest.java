@@ -30,6 +30,7 @@ import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -37,8 +38,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Tests finding/querying for resources.
@@ -74,7 +73,7 @@ public class FindQueryResourcesTest {
 
     @Test
     public void testFindResourcesSingleHandler() {
-        List<Resource> expected = ImmutableList.of(resource1, resource2);
+        List<Resource> expected = List.of(resource1, resource2);
         MockFindQueryResources.addFindResourceHandler(resourceResolver, (query, language) -> expected.iterator());
 
         assertResources(expected, resourceResolver.findResources("any-query", JCR_SQL2));
@@ -82,11 +81,11 @@ public class FindQueryResourcesTest {
 
     @Test
     public void testFindResourcesMultipleHandlers() {
-        List<Resource> expected1 = ImmutableList.of(resource1);
+        List<Resource> expected1 = List.of(resource1);
         MockFindQueryResources.addFindResourceHandler(resourceResolver, (query, language) ->
             StringUtils.equals(query, "q1") ? expected1.iterator() : null);
 
-        List<Resource> expected2 = ImmutableList.of(resource2);
+        List<Resource> expected2 = List.of(resource2);
         MockFindQueryResources.addFindResourceHandler(resourceResolver, (query, language) ->
             StringUtils.equals(query, "q2") ? expected2.iterator() : null);
 
@@ -102,24 +101,24 @@ public class FindQueryResourcesTest {
 
     @Test
     public void testQueryResourcesSingleHandler() {
-        List<Map<String,Object>> expected = ImmutableList.of(resource1.getValueMap(), resource2.getValueMap());
+        List<Map<String,Object>> expected = List.of(resource1.getValueMap(), resource2.getValueMap());
         MockFindQueryResources.addQueryResourceHandler(resourceResolver, (query, language) -> expected.iterator());
 
-        assertEquals(expected, ImmutableList.copyOf(resourceResolver.queryResources("any-query", JCR_SQL2)));
+        assertEquals(expected, IteratorUtils.toList(resourceResolver.queryResources("any-query", JCR_SQL2)));
     }
 
     @Test
     public void testQueryResourcesMultipleHandlers() {
-        List<Map<String,Object>> expected1 = ImmutableList.of(resource1.getValueMap());
+        List<Map<String,Object>> expected1 = List.of(resource1.getValueMap());
         MockFindQueryResources.addQueryResourceHandler(resourceResolver, (query, language) ->
             StringUtils.equals(query, "q1") ? expected1.iterator() : null);
 
-        List<Map<String,Object>> expected2 = ImmutableList.of(resource2.getValueMap());
+        List<Map<String,Object>> expected2 = List.of(resource2.getValueMap());
         MockFindQueryResources.addQueryResourceHandler(resourceResolver, (query, language) ->
             StringUtils.equals(query, "q2") ? expected2.iterator() : null);
 
-        assertEquals(expected1, ImmutableList.copyOf(resourceResolver.queryResources("q1", JCR_SQL2)));
-        assertEquals(expected2, ImmutableList.copyOf(resourceResolver.queryResources("q2", JCR_SQL2)));
+        assertEquals(expected1, IteratorUtils.toList(resourceResolver.queryResources("q1", JCR_SQL2)));
+        assertEquals(expected2, IteratorUtils.toList(resourceResolver.queryResources("q2", JCR_SQL2)));
     }
 
     private void assertResources(List<Resource> expected, Iterator<Resource> actual) {
