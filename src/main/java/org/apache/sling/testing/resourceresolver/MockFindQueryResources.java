@@ -19,6 +19,7 @@
 package org.apache.sling.testing.resourceresolver;
 
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -69,6 +70,39 @@ public final class MockFindQueryResources {
             throw new IllegalStateException("The given resource resolver is not based on resourceresolver-mock.");
         }
         return mockResourceResolver;
+    }
+
+    /**
+     * Adds a handler that can provide a mocked find resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link ResourceResolver#findResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param resourceResolverFactory Resource resolver factory. All resource resolvers created with this factory will be applied with the handler.
+     * @param handler Handler
+     * @throws IllegalStateException If the given resource resolver factory is not based on resourceresolver-mock
+     */
+    public static void addFindResourceHandler(@NotNull ResourceResolverFactory resourceResolverFactory, @NotNull MockFindResourcesHandler handler) {
+        toMockResourceResolverFactory(resourceResolverFactory).addFindResourceHandlerInternal(handler);
+    }
+
+    /**
+     * Adds a handler that can provide a mocked query resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link ResourceResolver#queryResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param resourceResolverFactory Resource resolver factory. All resource resolvers created with this factory will be applied with the handler.
+     * @param handler Handler
+     * @throws IllegalStateException If the given resource resolver is not based on resourceresolver-mock
+     */
+    public static void addQueryResourceHandler(@NotNull ResourceResolverFactory resourceResolverFactory, @NotNull MockQueryResourceHandler handler) {
+        toMockResourceResolverFactory(resourceResolverFactory).addQueryResourceHandlerInternal(handler);
+    }
+
+    private static @NotNull MockResourceResolverFactory toMockResourceResolverFactory(@NotNull ResourceResolverFactory resourceResolverFactory) {
+        if (resourceResolverFactory instanceof MockResourceResolverFactory) {
+            return (MockResourceResolverFactory)resourceResolverFactory;
+        }
+        throw new IllegalStateException("The given resource resolver factory is not based on resourceresolver-mock.");
     }
 
 }

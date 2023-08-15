@@ -18,6 +18,7 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -43,6 +44,9 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     private final Map<String, Map<String, Object>> resources = new LinkedHashMap<String, Map<String, Object>>();
 
     private final MockResourceResolverFactoryOptions options;
+
+    private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
+    private final List<MockQueryResourceHandler> queryResourcesHandlers = new ArrayList<>();
 
     /**
      * Create a new resource resolver factory
@@ -80,10 +84,10 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
             attributes.put(ResourceResolverFactory.USER, authenticationInfo.get(ResourceResolverFactory.USER));
         }
 
-        final ResourceResolver result = new MockResourceResolver(options, this, resources, attributes);
+        final ResourceResolver result = addFindQueryResourceHandlers(new MockResourceResolver(options, this, resources, attributes));
         Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
         if ( resolverStack == null ) {
-            resolverStack = new Stack<ResourceResolver>();
+            resolverStack = new Stack<>();
             resolverStackHolder.set(resolverStack);
         }
         resolverStack.push(result);
@@ -93,13 +97,13 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     @Override
     public @NotNull ResourceResolver getAdministrativeResourceResolver(
             final Map<String, Object> authenticationInfo) throws LoginException {
-        return new MockResourceResolver(options, this, resources);
+        return addFindQueryResourceHandlers(new MockResourceResolver(options, this, resources));
     }
 
     @Override
     public @NotNull ResourceResolver getServiceResourceResolver(
             Map<String, Object> authenticationInfo) throws LoginException {
-        return new MockResourceResolver(options, this, resources);
+        return addFindQueryResourceHandlers(new MockResourceResolver(options, this, resources));
     }
 
     /**
@@ -132,6 +136,20 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     // Sling API 2.24.0
     public @NotNull List<String> getSearchPath() {
         return Arrays.asList(this.options.getSearchPaths());
+    }
+
+    void addFindResourceHandlerInternal(@NotNull MockFindResourcesHandler handler) {
+        findResourcesHandlers.add(handler);
+    }
+
+    void addQueryResourceHandlerInternal(@NotNull MockQueryResourceHandler handler) {
+        queryResourcesHandlers.add(handler);
+    }
+
+    private MockResourceResolver addFindQueryResourceHandlers(@NotNull MockResourceResolver resourceResolver) {
+        findResourcesHandlers.forEach(resourceResolver::addFindResourceHandlerInternal);
+        queryResourcesHandlers.forEach(resourceResolver::addQueryResourceHandlerInternal);
+        return resourceResolver;
     }
 
 }
