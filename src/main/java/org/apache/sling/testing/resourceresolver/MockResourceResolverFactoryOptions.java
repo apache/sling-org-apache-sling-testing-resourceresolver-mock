@@ -18,6 +18,9 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.service.event.EventAdmin;
@@ -34,6 +37,9 @@ public class MockResourceResolverFactoryOptions {
     private String[] searchPaths = new String[] {"/apps/", "/libs/"};
 
     private boolean mangleNamespacePrefixes;
+
+    private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
+    private final List<MockQueryResourceHandler> queryResourcesHandlers = new ArrayList<>();
 
     public @Nullable EventAdmin getEventAdmin() {
         return eventAdmin;
@@ -71,10 +77,26 @@ public class MockResourceResolverFactoryOptions {
         }
         return mockResourceFactory;
     }
-    
+
     public @NotNull MockResourceResolverFactoryOptions setMockResourceFactory(MockResourceFactory factory) {
         this.mockResourceFactory = factory;
         return this;
+    }
+
+    public void addFindResourceHandler(@NotNull MockFindResourcesHandler handler) {
+        findResourcesHandlers.add(handler);
+    }
+
+    public @NotNull List<MockFindResourcesHandler> getFindResourcesHandlers() {
+        return findResourcesHandlers;
+    }
+
+    public void addQueryResourceHandlerInternal(@NotNull MockQueryResourceHandler handler) {
+        queryResourcesHandlers.add(handler);
+    }
+
+    public @NotNull List<MockQueryResourceHandler> getQueryResourcesHandlers() {
+        return queryResourcesHandlers;
     }
 
 }

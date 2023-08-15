@@ -67,9 +67,6 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     private Map<String,Object> propertyMap;
 
-    private final List<MockFindResourcesHandler> findResourcesHandlers = new ArrayList<>();
-    private final List<MockQueryResourceHandler> queryResourcesHandlers = new ArrayList<>();
-
     public MockResourceResolver(final MockResourceResolverFactoryOptions options,
             final MockResourceResolverFactory factory,
             final Map<String, Map<String, Object>> resources) {
@@ -480,7 +477,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     @Override
     @SuppressWarnings("null")
     public @NotNull Iterator<Resource> findResources(final @NotNull String query, final String language) {
-        return findResourcesHandlers.stream()
+        return options.getFindResourcesHandlers().stream()
             .map(handler -> handler.findResources(query, language))
             .filter(Objects::nonNull)
             .findFirst()
@@ -501,13 +498,13 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     void addFindResourceHandlerInternal(@NotNull MockFindResourcesHandler handler) {
-        findResourcesHandlers.add(handler);
+        options.addFindResourceHandler(handler);
     }
 
     @Override
     @SuppressWarnings("null")
     public @NotNull Iterator<Map<String, Object>> queryResources(@NotNull String query, String language) {
-        return queryResourcesHandlers.stream()
+        return options.getQueryResourcesHandlers().stream()
                 .map(handler -> handler.queryResources(query, language))
                 .filter(Objects::nonNull)
                 .findFirst()
@@ -528,7 +525,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     void addQueryResourceHandlerInternal(@NotNull MockQueryResourceHandler handler) {
-        queryResourcesHandlers.add(handler);
+        options.addQueryResourceHandlerInternal(handler);
     }
 
     // Sling API 2.24.0
