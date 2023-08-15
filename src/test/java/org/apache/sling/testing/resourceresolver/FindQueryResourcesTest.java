@@ -22,6 +22,7 @@ import static javax.jcr.query.Query.JCR_SQL2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +47,8 @@ import org.junit.Test;
 @SuppressWarnings("null")
 public class FindQueryResourcesTest {
 
-    private ResourceResolver resourceResolver;
+    protected ResourceResolverFactory resourceResolverFactory = new MockResourceResolverFactory();
+    protected ResourceResolver resourceResolver;
     private Resource resource1;
     private Resource resource2;
 
@@ -59,63 +62,80 @@ public class FindQueryResourcesTest {
             .commit();
         resource1 = resourceResolver.getResource("/resource1");
         resource2 = resourceResolver.getResource("/resource2");
+        resourceResolver.commit();
     }
 
     protected ResourceResolver createResourceResolver() throws LoginException {
-        return new MockResourceResolverFactory().getResourceResolver(null);
+        return resourceResolverFactory.getResourceResolver(null);
+    }
+
+    protected ResourceResolver createResourceResolver_addFindResourceHandlers(MockFindResourcesHandler... handlers) throws LoginException {
+        // set handler directly on newly created resource resolver
+        ResourceResolver resourceResolver = createResourceResolver();
+        Arrays.stream(handlers).forEach(handler -> MockFindQueryResources.addFindResourceHandler(resourceResolver, handler));
+        return resourceResolver;
+    }
+
+    protected ResourceResolver createResourceResolver_addQueryResourceHandlers(MockQueryResourceHandler... handlers) throws LoginException {
+        // set handler directly on newly created resource resolver
+        ResourceResolver resourceResolver = createResourceResolver();
+        Arrays.stream(handlers).forEach(handler -> MockFindQueryResources.addQueryResourceHandler(resourceResolver, handler));
+        return resourceResolver;
     }
 
     @Test
-    public void testFindResourcesNoHandler() {
+    public void testFindResourcesNoHandler() throws Exception {
+        ResourceResolver resourceResolver = createResourceResolver_addFindResourceHandlers();
         Iterator<Resource> result = resourceResolver.findResources("any-query", JCR_SQL2);
         assertFalse(result.hasNext());
     }
 
     @Test
-    public void testFindResourcesSingleHandler() {
+    public void testFindResourcesSingleHandler() throws Exception {
         List<Resource> expected = List.of(resource1, resource2);
-        MockFindQueryResources.addFindResourceHandler(resourceResolver, (query, language) -> expected.iterator());
+        ResourceResolver resourceResolver = createResourceResolver_addFindResourceHandlers(
+                (query, language) -> expected.iterator());
 
         assertResources(expected, resourceResolver.findResources("any-query", JCR_SQL2));
     }
 
     @Test
-    public void testFindResourcesMultipleHandlers() {
+    public void testFindResourcesMultipleHandlers() throws Exception {
         List<Resource> expected1 = List.of(resource1);
-        MockFindQueryResources.addFindResourceHandler(resourceResolver, (query, language) ->
-            StringUtils.equals(query, "q1") ? expected1.iterator() : null);
-
         List<Resource> expected2 = List.of(resource2);
-        MockFindQueryResources.addFindResourceHandler(resourceResolver, (query, language) ->
-            StringUtils.equals(query, "q2") ? expected2.iterator() : null);
+
+        ResourceResolver resourceResolver = createResourceResolver_addFindResourceHandlers(
+                (query, language) -> StringUtils.equals(query, "q1") ? expected1.iterator() : null,
+                (query, language) -> StringUtils.equals(query, "q2") ? expected2.iterator() : null);
 
         assertResources(expected1, resourceResolver.findResources("q1", JCR_SQL2));
         assertResources(expected2, resourceResolver.findResources("q2", JCR_SQL2));
     }
 
     @Test
-    public void testQueryResourcesNoHandler() {
+    public void testQueryResourcesNoHandler() throws Exception {
+        ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers();
         Iterator<Map<String,Object>> result = resourceResolver.queryResources("any-query", JCR_SQL2);
         assertFalse(result.hasNext());
     }
 
     @Test
-    public void testQueryResourcesSingleHandler() {
+    public void testQueryResourcesSingleHandler() throws Exception {
         List<Map<String,Object>> expected = List.of(resource1.getValueMap(), resource2.getValueMap());
-        MockFindQueryResources.addQueryResourceHandler(resourceResolver, (query, language) -> expected.iterator());
+        ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers(
+                (query, language) -> expected.iterator());
 
         assertEquals(expected, IteratorUtils.toList(resourceResolver.queryResources("any-query", JCR_SQL2)));
     }
 
     @Test
-    public void testQueryResourcesMultipleHandlers() {
+    public void testQueryResourcesMultipleHandlers() throws Exception {
         List<Map<String,Object>> expected1 = List.of(resource1.getValueMap());
-        MockFindQueryResources.addQueryResourceHandler(resourceResolver, (query, language) ->
-            StringUtils.equals(query, "q1") ? expected1.iterator() : null);
 
         List<Map<String,Object>> expected2 = List.of(resource2.getValueMap());
-        MockFindQueryResources.addQueryResourceHandler(resourceResolver, (query, language) ->
-            StringUtils.equals(query, "q2") ? expected2.iterator() : null);
+        ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers(
+                (query, language) -> StringUtils.equals(query, "q1") ? expected1.iterator() : null,
+                (query, language) -> StringUtils.equals(query, "q2") ? expected2.iterator() : null);
 
         assertEquals(expected1, IteratorUtils.toList(resourceResolver.queryResources("q1", JCR_SQL2)));
         assertEquals(expected2, IteratorUtils.toList(resourceResolver.queryResources("q2", JCR_SQL2)));
