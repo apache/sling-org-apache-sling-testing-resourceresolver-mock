@@ -43,7 +43,7 @@ public class RootResourceTypeTest {
     @Test
     @SuppressWarnings("null")
     public void testIsResourceResolver() {
-        Resource root= resourceResolver.getResource("/");
+        Resource root = resourceResolver.getResource("/");
         Assert.assertTrue(root.isResourceType("rep:root"));
     }
 
@@ -52,5 +52,4 @@ public class RootResourceTypeTest {
         Resource rootParent = resourceResolver.getResource("/..");
         Assert.assertNull(rootParent);
     }
-
 }

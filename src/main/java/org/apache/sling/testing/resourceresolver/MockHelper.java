@@ -48,7 +48,6 @@ public class MockHelper {
         this.resolver = r;
     }
 
-
     /**
      * Create a new helper
      * @param resolver Resource resolver
@@ -67,9 +66,9 @@ public class MockHelper {
      */
     public @NotNull MockHelper resource(@NotNull final String path) {
         final String fullPath;
-        if ( path.startsWith("/") ) {
+        if (path.startsWith("/")) {
             fullPath = path;
-        } else if ( path.startsWith(".") ) {
+        } else if (path.startsWith(".")) {
             final Description d = this.stack.peek();
             fullPath = ResourceUtil.normalize(d.path + "/../" + path.substring(1));
         } else {
@@ -101,7 +100,7 @@ public class MockHelper {
      * @throws PersistenceException Persistence exception
      */
     public void add() throws PersistenceException {
-        for(int i=0; i<this.stack.size(); i++) {
+        for (int i = 0; i < this.stack.size(); i++) {
             final Description d = this.stack.get(i);
             this.create(d.path, d.properties);
         }
@@ -118,7 +117,8 @@ public class MockHelper {
     }
 
     @SuppressWarnings("null")
-    private void create(@NotNull final String path, @NotNull final Map<String, Object> properties) throws PersistenceException {
+    private void create(@NotNull final String path, @NotNull final Map<String, Object> properties)
+            throws PersistenceException {
         final String parentPath = ResourceUtil.getParent(path);
         final String name = ResourceUtil.getName(path);
 

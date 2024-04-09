@@ -37,12 +37,7 @@ class MockQueryLanguageProvider implements QueryLanguageProvider<Void> {
 
     private final MockResourceResolver mockResourceResolver;
 
-    private static final String[] SUPPORTED_LANGUAGES = {
-            "xpath",
-            "sql",
-            "JCR-SQL2",
-            "JCR-JQOM"
-    };
+    private static final String[] SUPPORTED_LANGUAGES = {"xpath", "sql", "JCR-SQL2", "JCR-JQOM"};
 
     MockQueryLanguageProvider(MockResourceResolver mockResourceResolver) {
         this.mockResourceResolver = mockResourceResolver;
@@ -60,17 +55,16 @@ class MockQueryLanguageProvider implements QueryLanguageProvider<Void> {
 
     @Override
     public Iterator<ValueMap> queryResources(@NotNull ResolveContext<Void> ctx, String query, String language) {
-        Iterator<Map<String,Object>> result = mockResourceResolver.queryResources(query, language);
+        Iterator<Map<String, Object>> result = mockResourceResolver.queryResources(query, language);
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(result, Spliterator.ORDERED), false)
                 .map(MockQueryLanguageProvider::toValueMap)
                 .iterator();
     }
 
-    private static ValueMap toValueMap(Map<String,Object> item) {
+    private static ValueMap toValueMap(Map<String, Object> item) {
         if (item instanceof ValueMap) {
-            return (ValueMap)item;
-        }
-        else {
+            return (ValueMap) item;
+        } else {
             return new ValueMapDecorator(item);
         }
     }
@@ -98,5 +92,4 @@ class MockQueryLanguageProvider implements QueryLanguageProvider<Void> {
             }
         };
     }
-
 }

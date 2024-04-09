@@ -18,13 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +42,13 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Implements simple write and read resource and values test.
  * Sling CRUD API is used to create the test data.
@@ -57,7 +57,7 @@ import org.junit.Test;
 public class SlingCrudResourceResolverTest {
 
     private static final String STRING_VALUE = "value1";
-    private static final String[] STRING_ARRAY_VALUE = new String[] { "value1", "value2" };
+    private static final String[] STRING_ARRAY_VALUE = new String[] {"value1", "value2"};
     private static final int INTEGER_VALUE = 25;
     private static final long LONG_VALUE = 250L;
     private static final double DOUBLE_VALUE = 3.555d;
@@ -65,7 +65,7 @@ public class SlingCrudResourceResolverTest {
     private static final boolean BOOLEAN_VALUE = true;
     private static final Date DATE_VALUE = new Date(10000);
     private static final Calendar CALENDAR_VALUE = Calendar.getInstance();
-    private static final byte[] BINARY_VALUE = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+    private static final byte[] BINARY_VALUE = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
 
     private static final String NT_UNSTRUCTURED = "nt:unstructured";
 
@@ -79,22 +79,23 @@ public class SlingCrudResourceResolverTest {
         Resource root = resourceResolver.getResource("/");
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
 
-        Resource node1 = resourceResolver.create(testRoot, "node1",
-            Map.ofEntries(
-                Map.entry(MockResource.JCR_PRIMARYTYPE, NT_UNSTRUCTURED),
-                Map.entry("stringProp", STRING_VALUE),
-                Map.entry("stringArrayProp", STRING_ARRAY_VALUE),
-                Map.entry("integerProp", INTEGER_VALUE),
-                Map.entry("longProp", LONG_VALUE),
-                Map.entry("doubleProp", DOUBLE_VALUE),
-                Map.entry("booleanProp", BOOLEAN_VALUE),
-                Map.entry("bigDecimalProp", BIGDECIMAL_VALUE),
-                Map.entry("dateProp", DATE_VALUE),
-                Map.entry("calendarProp", CALENDAR_VALUE),
-                Map.entry("binaryProp", new ByteArrayInputStream(BINARY_VALUE))));
+        Resource node1 = resourceResolver.create(
+                testRoot,
+                "node1",
+                Map.ofEntries(
+                        Map.entry(MockResource.JCR_PRIMARYTYPE, NT_UNSTRUCTURED),
+                        Map.entry("stringProp", STRING_VALUE),
+                        Map.entry("stringArrayProp", STRING_ARRAY_VALUE),
+                        Map.entry("integerProp", INTEGER_VALUE),
+                        Map.entry("longProp", LONG_VALUE),
+                        Map.entry("doubleProp", DOUBLE_VALUE),
+                        Map.entry("booleanProp", BOOLEAN_VALUE),
+                        Map.entry("bigDecimalProp", BIGDECIMAL_VALUE),
+                        Map.entry("dateProp", DATE_VALUE),
+                        Map.entry("calendarProp", CALENDAR_VALUE),
+                        Map.entry("binaryProp", new ByteArrayInputStream(BINARY_VALUE))));
 
-        resourceResolver.create(node1, "node11", Map.<String, Object>of(
-                "stringProp11", STRING_VALUE));
+        resourceResolver.create(node1, "node11", Map.<String, Object>of("stringProp11", STRING_VALUE));
         resourceResolver.create(node1, "node12", ValueMap.EMPTY);
 
         resourceResolver.commit();
@@ -113,8 +114,8 @@ public class SlingCrudResourceResolverTest {
         ValueMap props = ResourceUtil.getValueMap(resource1);
         assertEquals(STRING_VALUE, props.get("stringProp", String.class));
         assertArrayEquals(STRING_ARRAY_VALUE, props.get("stringArrayProp", String[].class));
-        assertEquals((Integer)INTEGER_VALUE, props.get("integerProp", Integer.class));
-        assertEquals((Long)LONG_VALUE, props.get("longProp", Long.class));
+        assertEquals((Integer) INTEGER_VALUE, props.get("integerProp", Integer.class));
+        assertEquals((Long) LONG_VALUE, props.get("longProp", Long.class));
         assertEquals(DOUBLE_VALUE, props.get("doubleProp", Double.class), 0.0001);
         assertEquals(BIGDECIMAL_VALUE, props.get("bigDecimalProp", BigDecimal.class));
         assertEquals(BOOLEAN_VALUE, props.get("booleanProp", Boolean.class));
@@ -125,8 +126,8 @@ public class SlingCrudResourceResolverTest {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
         ValueMap props = ResourceUtil.getValueMap(resource1);
 
-        assertEquals((Integer)(int)LONG_VALUE, props.get("longProp", Integer.class));
-        assertEquals((Long)(long)INTEGER_VALUE, props.get("integerProp", Long.class));
+        assertEquals((Integer) (int) LONG_VALUE, props.get("longProp", Integer.class));
+        assertEquals((Long) (long) INTEGER_VALUE, props.get("integerProp", Long.class));
     }
 
     @Test
@@ -134,8 +135,11 @@ public class SlingCrudResourceResolverTest {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
         ValueMap props = ResourceUtil.getValueMap(resource1);
 
-        assertEquals(new BigDecimal(DOUBLE_VALUE).doubleValue(), props.get("doubleProp", BigDecimal.class).doubleValue(), 0.0001d);
-        assertEquals(BIGDECIMAL_VALUE.doubleValue() , props.get("bigDecimalProp", Double.class), 0.0001d);
+        assertEquals(
+                new BigDecimal(DOUBLE_VALUE).doubleValue(),
+                props.get("doubleProp", BigDecimal.class).doubleValue(),
+                0.0001d);
+        assertEquals(BIGDECIMAL_VALUE.doubleValue(), props.get("bigDecimalProp", Double.class), 0.0001d);
     }
 
     @Test
@@ -148,7 +152,7 @@ public class SlingCrudResourceResolverTest {
         assertEquals(STRING_VALUE, props.get("node1/stringProp", String.class));
         assertArrayEquals(STRING_ARRAY_VALUE, props.get("node1/stringArrayProp", String[].class));
         assertEquals((Integer) INTEGER_VALUE, props.get("node1/integerProp", Integer.class));
-        assertEquals((Long)LONG_VALUE, props.get("node1/longProp", Long.class));
+        assertEquals((Long) LONG_VALUE, props.get("node1/longProp", Long.class));
         assertEquals(DOUBLE_VALUE, props.get("node1/doubleProp", Double.class), 0.0001);
         assertEquals(BIGDECIMAL_VALUE, props.get("node1/bigDecimalProp", BigDecimal.class));
         assertEquals(BOOLEAN_VALUE, props.get("node1/booleanProp", Boolean.class));
@@ -178,7 +182,9 @@ public class SlingCrudResourceResolverTest {
     public void testCalendarProperty() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
         ValueMap props = ResourceUtil.getValueMap(resource1);
-        assertEquals(CALENDAR_VALUE.getTime(), props.get("calendarProp", Calendar.class).getTime());
+        assertEquals(
+                CALENDAR_VALUE.getTime(),
+                props.get("calendarProp", Calendar.class).getTime());
     }
 
     @Test
@@ -199,7 +205,9 @@ public class SlingCrudResourceResolverTest {
 
         resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
         ValueMap props = ResourceUtil.getValueMap(resource1);
-        assertEquals(CALENDAR_VALUE.getTime(), props.get("calendarProp", Calendar.class).getTime());
+        assertEquals(
+                CALENDAR_VALUE.getTime(),
+                props.get("calendarProp", Calendar.class).getTime());
     }
 
     @Test
@@ -260,7 +268,7 @@ public class SlingCrudResourceResolverTest {
 
     @Test
     public void testGetResourceNullPath() {
-        Resource resource = resourceResolver.getResource((String)null);
+        Resource resource = resourceResolver.getResource((String) null);
         assertNull(resource);
     }
 
@@ -274,7 +282,7 @@ public class SlingCrudResourceResolverTest {
 
     @Test
     public void testGetRootResourceByNullPath() {
-        Resource rootResource = this.resourceResolver.resolve((String)null);
+        Resource rootResource = this.resourceResolver.resolve((String) null);
         assertNotNull(rootResource);
         assertEquals("/", rootResource.getPath());
     }
@@ -296,12 +304,16 @@ public class SlingCrudResourceResolverTest {
     @Test
     public void testGetParentResourceType() throws PersistenceException {
         Resource r1 = resourceResolver.create(testRoot, "resource1", ValueMap.EMPTY);
-        Resource r2 = resourceResolver.create(testRoot, "resource2", Map.<String, Object>of(
-                "sling:resourceSuperType", testRoot.getPath() + "/resource1"));
-        Resource r3 = resourceResolver.create(testRoot, "resource3", Map.<String, Object>of(
-                "sling:resourceType", testRoot.getPath() + "/resource2"));
-        Resource r4 = resourceResolver.create(testRoot, "resource4", Map.<String, Object>of(
-                "sling:resourceSuperType", testRoot.getPath() + "/resource2"));
+        Resource r2 = resourceResolver.create(
+                testRoot,
+                "resource2",
+                Map.<String, Object>of("sling:resourceSuperType", testRoot.getPath() + "/resource1"));
+        Resource r3 = resourceResolver.create(
+                testRoot, "resource3", Map.<String, Object>of("sling:resourceType", testRoot.getPath() + "/resource2"));
+        Resource r4 = resourceResolver.create(
+                testRoot,
+                "resource4",
+                Map.<String, Object>of("sling:resourceSuperType", testRoot.getPath() + "/resource2"));
 
         assertNull(resourceResolver.getParentResourceType(r1));
         assertEquals(r1.getPath(), resourceResolver.getParentResourceType(r2));
@@ -310,11 +322,11 @@ public class SlingCrudResourceResolverTest {
         assertEquals(r2.getPath(), resourceResolver.getParentResourceType(r4.getPath()));
     }
 
-
     @Test
     public void testResourceMetadata() throws IOException {
         Resource resource1 = resourceResolver.getResource(testRoot.getPath() + "/node1");
-        assertEquals(testRoot.getPath() + "/node1", resource1.getResourceMetadata().getResolutionPath());
+        assertEquals(
+                testRoot.getPath() + "/node1", resource1.getResourceMetadata().getResolutionPath());
     }
 
     @Test
@@ -363,5 +375,4 @@ public class SlingCrudResourceResolverTest {
         resourceResolver.commit();
         assertFalse(resourceResolver.hasChanges());
     }
-
 }

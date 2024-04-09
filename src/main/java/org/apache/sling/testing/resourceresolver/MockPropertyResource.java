@@ -37,9 +37,7 @@ class MockPropertyResource extends AbstractResource {
     private final ResourceResolver resolver;
     private final ResourceMetadata rm;
 
-    public MockPropertyResource(final String path,
-            final ValueMap props,
-            final ResourceResolver resolver) {
+    public MockPropertyResource(final String path, final ValueMap props, final ResourceResolver resolver) {
         this.path = path;
         this.props = props;
         this.key = ResourceUtil.getName(path);
@@ -47,7 +45,8 @@ class MockPropertyResource extends AbstractResource {
         this.resolver = resolver;
     }
 
-    private MockPropertyResource(String path, ValueMap props, String key, ResourceMetadata rm, ResourceResolver resolver) {
+    private MockPropertyResource(
+            String path, ValueMap props, String key, ResourceMetadata rm, ResourceResolver resolver) {
         this.path = path;
         this.props = props;
         this.key = key;
@@ -86,7 +85,7 @@ class MockPropertyResource extends AbstractResource {
     @SuppressWarnings("null")
     public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
         AdapterType value = props.get(key, type);
-        if (value!=null) {
+        if (value != null) {
             return value;
         }
         return super.adaptTo(type);
@@ -100,5 +99,4 @@ class MockPropertyResource extends AbstractResource {
     Resource forResourceProvider(ResourceResolver resourceResolver) {
         return new MockPropertyResource(this.path, this.props, this.key, this.rm, resourceResolver);
     }
-
 }

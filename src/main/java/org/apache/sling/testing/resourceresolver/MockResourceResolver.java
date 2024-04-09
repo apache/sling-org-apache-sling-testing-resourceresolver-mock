@@ -18,6 +18,8 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
+import javax.servlet.http.HttpServletRequest;
+
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +35,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.SlingException;
@@ -55,7 +55,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     private final Map<String, Map<String, Object>> resources;
 
-    private final Map<String, Map<String, Object>> temporaryResources = new LinkedHashMap<String, Map<String,Object>>();
+    private final Map<String, Map<String, Object>> temporaryResources =
+            new LinkedHashMap<String, Map<String, Object>>();
 
     private final Set<String> deletedResources = new HashSet<String>();
 
@@ -63,20 +64,22 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     private final MockResourceResolverFactory factory;
 
-    private final Map<String,Object> attributes;
+    private final Map<String, Object> attributes;
 
-    private Map<String,Object> propertyMap;
+    private Map<String, Object> propertyMap;
 
-    public MockResourceResolver(final MockResourceResolverFactoryOptions options,
+    public MockResourceResolver(
+            final MockResourceResolverFactoryOptions options,
             final MockResourceResolverFactory factory,
             final Map<String, Map<String, Object>> resources) {
-        this(options, factory, resources, Collections.<String,Object>emptyMap());
+        this(options, factory, resources, Collections.<String, Object>emptyMap());
     }
 
-    public MockResourceResolver(final MockResourceResolverFactoryOptions options,
+    public MockResourceResolver(
+            final MockResourceResolverFactoryOptions options,
             final MockResourceResolverFactory factory,
             final Map<String, Map<String, Object>> resources,
-            final Map<String,Object> attributes) {
+            final Map<String, Object> attributes) {
         this.factory = factory;
         this.options = options;
         this.resources = resources;
@@ -95,8 +98,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         String urlRemainder = null;
         int urlRemainderPos = Math.min(path.indexOf('?'), path.indexOf('#'));
         if (urlRemainderPos >= 0) {
-          urlRemainder = path.substring(urlRemainderPos);
-          path = path.substring(0, urlRemainderPos);
+            urlRemainder = path.substring(urlRemainderPos);
+            path = path.substring(0, urlRemainderPos);
         }
 
         // unmangle namespaces
@@ -134,8 +137,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         String urlRemainder = null;
         int urlRemainderPos = Math.min(path.indexOf('?'), path.indexOf('#'));
         if (urlRemainderPos >= 0) {
-          urlRemainder = path.substring(urlRemainderPos);
-          path = path.substring(0, urlRemainderPos);
+            urlRemainder = path.substring(urlRemainderPos);
+            path = path.substring(0, urlRemainderPos);
         }
 
         // mangle namespaces
@@ -157,7 +160,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
             if (parentPath != null) {
                 String name = ResourceUtil.getName(path);
                 Resource parentResource = getResourceInternal(parentPath);
-                if (parentResource!=null) {
+                if (parentResource != null) {
                     ValueMap props = ResourceUtil.getValueMap(parentResource);
                     if (props.containsKey(name)) {
                         return new MockPropertyResource(path, props, this);
@@ -177,24 +180,24 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         String normalizedPath = ResourceUtil.normalize(path);
         if (normalizedPath == null) {
             return null;
-        } else if ( normalizedPath.startsWith("/") ) {
-            if ( this.deletedResources.contains(normalizedPath) ) {
+        } else if (normalizedPath.startsWith("/")) {
+            if (this.deletedResources.contains(normalizedPath)) {
                 return null;
             }
             final Map<String, Object> tempProps = this.temporaryResources.get(normalizedPath);
-            if ( tempProps != null ) {
+            if (tempProps != null) {
                 return newMockResource(normalizedPath, tempProps, this);
             }
-            synchronized ( this.resources ) {
+            synchronized (this.resources) {
                 final Map<String, Object> props = this.resources.get(normalizedPath);
-                if ( props != null ) {
+                if (props != null) {
                     return newMockResource(normalizedPath, props, this);
                 }
             }
         } else {
-            for(final String s : this.getSearchPath() ) {
+            for (final String s : this.getSearchPath()) {
                 final Resource rsrc = this.getResource(s + '/' + normalizedPath);
-                if ( rsrc != null ) {
+                if (rsrc != null) {
                     return rsrc;
                 }
             }
@@ -204,13 +207,13 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     public Resource getResource(Resource base, @NotNull String path) {
-        if ( path == null || path.length() == 0 ) {
+        if (path == null || path.length() == 0) {
             path = "/";
         }
-        if ( path.startsWith("/") ) {
+        if (path.startsWith("/")) {
             return getResource(path);
         }
-        if ( base.getPath().equals("/") ) {
+        if (base.getPath().equals("/")) {
             return getResource(base.getPath() + path);
         }
         return getResource(base.getPath() + '/' + path);
@@ -225,35 +228,33 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     public @NotNull Iterator<Resource> listChildren(final @NotNull Resource parent) {
         final String pathPrefix = "/".equals(parent.getPath()) ? "" : parent.getPath();
         final Pattern childPathMatcher = Pattern.compile("^" + Pattern.quote(pathPrefix) + "/[^/]+$");
-        final Map<String, Map<String, Object>> candidates = new LinkedHashMap<String, Map<String,Object>>();
-        synchronized ( this.resources ) {
-            for(final Map.Entry<String, Map<String, Object>> e : this.resources.entrySet()) {
+        final Map<String, Map<String, Object>> candidates = new LinkedHashMap<String, Map<String, Object>>();
+        synchronized (this.resources) {
+            for (final Map.Entry<String, Map<String, Object>> e : this.resources.entrySet()) {
                 if (childPathMatcher.matcher(e.getKey()).matches()) {
-                    if ( !this.deletedResources.contains(e.getKey()) ) {
+                    if (!this.deletedResources.contains(e.getKey())) {
                         candidates.put(e.getKey(), e.getValue());
                     }
                 }
             }
-            for(final Map.Entry<String, Map<String, Object>> e : this.temporaryResources.entrySet()) {
+            for (final Map.Entry<String, Map<String, Object>> e : this.temporaryResources.entrySet()) {
                 if (childPathMatcher.matcher(e.getKey()).matches()) {
-                    if ( !this.deletedResources.contains(e.getKey()) ) {
+                    if (!this.deletedResources.contains(e.getKey())) {
                         candidates.put(e.getKey(), e.getValue());
                     }
                 }
             }
         }
         final List<Resource> children = new ArrayList<Resource>();
-        for(final Map.Entry<String, Map<String, Object>> e : candidates.entrySet()) {
+        for (final Map.Entry<String, Map<String, Object>> e : candidates.entrySet()) {
             children.add(newMockResource(e.getKey(), e.getValue(), this));
         }
         return children.iterator();
     }
 
-    private Resource newMockResource(final String path,
-            final Map<String, Object> properties,
-            final ResourceResolver resolver) {
-        return this.options.getMockResourceFactory()
-                    .newMockResource(path, properties, resolver);
+    private Resource newMockResource(
+            final String path, final Map<String, Object> properties, final ResourceResolver resolver) {
+        return this.options.getMockResourceFactory().newMockResource(path, properties, resolver);
     }
 
     @Override
@@ -277,10 +278,10 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         this.factory.closed(this);
     }
 
-    private void clearPropertyMap(){
+    private void clearPropertyMap() {
         if (propertyMap != null) {
             for (Entry<String, Object> entry : propertyMap.entrySet()) {
-                if (entry.getValue()  instanceof Closeable) {
+                if (entry.getValue() instanceof Closeable) {
                     try {
                         ((Closeable) entry.getValue()).close();
                     } catch (Exception e) {
@@ -312,16 +313,17 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         this.deletedResources.add(resource.getPath());
         this.temporaryResources.remove(resource.getPath());
         final String prefixPath = resource.getPath() + '/';
-        synchronized ( this.resources ) {
-            for(final Map.Entry<String, Map<String, Object>> e : this.resources.entrySet()) {
+        synchronized (this.resources) {
+            for (final Map.Entry<String, Map<String, Object>> e : this.resources.entrySet()) {
                 if (e.getKey().startsWith(prefixPath)) {
                     this.deletedResources.add(e.getKey());
                 }
             }
-            final Iterator<Map.Entry<String, Map<String, Object>>> i = this.temporaryResources.entrySet().iterator();
-            while ( i.hasNext() ) {
+            final Iterator<Map.Entry<String, Map<String, Object>>> i =
+                    this.temporaryResources.entrySet().iterator();
+            while (i.hasNext()) {
                 final Map.Entry<String, Map<String, Object>> e = i.next();
-                if (e.getKey().startsWith(prefixPath) ) {
+                if (e.getKey().startsWith(prefixPath)) {
                     i.remove();
                 }
             }
@@ -329,19 +331,19 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    public @NotNull Resource create(@NotNull Resource parent, @NotNull String name,
-            Map<String, Object> properties) throws PersistenceException {
+    public @NotNull Resource create(@NotNull Resource parent, @NotNull String name, Map<String, Object> properties)
+            throws PersistenceException {
         final String path = (parent.getPath().equals("/") ? parent.getPath() + name : parent.getPath() + '/' + name);
-        if ( this.temporaryResources.containsKey(path) ) {
+        if (this.temporaryResources.containsKey(path)) {
             throw new PersistenceException("Path already exists: " + path);
         }
-        synchronized ( this.resources ) {
-            if ( this.resources.containsKey(path) && !this.deletedResources.contains(path) ) {
+        synchronized (this.resources) {
+            if (this.resources.containsKey(path) && !this.deletedResources.contains(path)) {
                 throw new PersistenceException("Path already exists: " + path);
             }
         }
         this.deletedResources.remove(path);
-        if ( properties == null ) {
+        if (properties == null) {
             properties = new HashMap<String, Object>();
         }
 
@@ -360,9 +362,9 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     @SuppressWarnings("deprecation")
     public void commit() throws PersistenceException {
         EventAdmin eventAdmin = this.options.getEventAdmin();
-        synchronized ( this.resources ) {
-            for(final String path : this.deletedResources ) {
-                if ( this.resources.remove(path) != null && eventAdmin != null ) {
+        synchronized (this.resources) {
+            for (final String path : this.deletedResources) {
+                if (this.resources.remove(path) != null && eventAdmin != null) {
                     final Dictionary<String, Object> props = new Hashtable<String, Object>();
                     props.put(SlingConstants.PROPERTY_PATH, path);
                     final Event e = new Event(SlingConstants.TOPIC_RESOURCE_REMOVED, props);
@@ -370,16 +372,20 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
                 }
                 this.temporaryResources.remove(path);
             }
-            for(final String path : this.temporaryResources.keySet() ) {
+            for (final String path : this.temporaryResources.keySet()) {
                 final boolean changed = this.resources.containsKey(path);
                 this.resources.put(path, this.temporaryResources.get(path));
-                if ( eventAdmin != null ) {
+                if (eventAdmin != null) {
                     final Dictionary<String, Object> props = new Hashtable<String, Object>();
                     props.put(SlingConstants.PROPERTY_PATH, path);
-                    if ( this.resources.get(path).get(ResourceResolver.PROPERTY_RESOURCE_TYPE) != null ) {
-                        props.put(SlingConstants.PROPERTY_RESOURCE_TYPE, this.resources.get(path).get(ResourceResolver.PROPERTY_RESOURCE_TYPE));
+                    if (this.resources.get(path).get(ResourceResolver.PROPERTY_RESOURCE_TYPE) != null) {
+                        props.put(
+                                SlingConstants.PROPERTY_RESOURCE_TYPE,
+                                this.resources.get(path).get(ResourceResolver.PROPERTY_RESOURCE_TYPE));
                     }
-                    final Event e = new Event(changed ? SlingConstants.TOPIC_RESOURCE_CHANGED : SlingConstants.TOPIC_RESOURCE_ADDED, props);
+                    final Event e = new Event(
+                            changed ? SlingConstants.TOPIC_RESOURCE_CHANGED : SlingConstants.TOPIC_RESOURCE_ADDED,
+                            props);
                     eventAdmin.sendEvent(e);
                 }
             }
@@ -395,31 +401,32 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     @Override
     public boolean isResourceType(Resource resource, String resourceType) {
         boolean result = false;
-        if ( resource != null && resourceType != null ) {
-             // Check if the resource is of the given type. This method first checks the
-             // resource type of the resource, then its super resource type and continues
-             //  to go up the resource super type hierarchy.
-             if (ResourceTypeUtil.areResourceTypesEqual(resourceType, resource.getResourceType(), getSearchPath())) {
-                 result = true;
-             } else {
-                 Set<String> superTypesChecked = new HashSet<>();
-                 String superType = this.getParentResourceType(resource);
-                 while (!result && superType != null) {
-                     if (ResourceTypeUtil.areResourceTypesEqual(resourceType, superType, getSearchPath())) {
-                         result = true;
-                     } else {
-                         superTypesChecked.add(superType);
-                         superType = this.getParentResourceType(superType);
-                         if (superType != null && superTypesChecked.contains(superType)) {
-                             throw new SlingException("Cyclic dependency for resourceSuperType hierarchy detected on resource " + resource.getPath()) {
+        if (resource != null && resourceType != null) {
+            // Check if the resource is of the given type. This method first checks the
+            // resource type of the resource, then its super resource type and continues
+            //  to go up the resource super type hierarchy.
+            if (ResourceTypeUtil.areResourceTypesEqual(resourceType, resource.getResourceType(), getSearchPath())) {
+                result = true;
+            } else {
+                Set<String> superTypesChecked = new HashSet<>();
+                String superType = this.getParentResourceType(resource);
+                while (!result && superType != null) {
+                    if (ResourceTypeUtil.areResourceTypesEqual(resourceType, superType, getSearchPath())) {
+                        result = true;
+                    } else {
+                        superTypesChecked.add(superType);
+                        superType = this.getParentResourceType(superType);
+                        if (superType != null && superTypesChecked.contains(superType)) {
+                            throw new SlingException(
+                                    "Cyclic dependency for resourceSuperType hierarchy detected on resource "
+                                            + resource.getPath()) {
                                 // anonymous class to avoid problem with null cause
                                 private static final long serialVersionUID = 1L;
-                             };
-                         }
-                     }
-                 }
-             }
-
+                            };
+                        }
+                    }
+                }
+            }
         }
         return result;
     }
@@ -436,7 +443,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     @Override
     public String getParentResourceType(Resource resource) {
         String resourceSuperType = null;
-        if ( resource != null ) {
+        if (resource != null) {
             resourceSuperType = resource.getResourceSuperType();
             if (resourceSuperType == null) {
                 resourceSuperType = this.getParentResourceType(resource.getResourceType());
@@ -451,7 +458,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         final String rtPath = (resourceType == null ? null : ResourceUtil.resourceTypeToPath(resourceType));
         // get the resource type resource and check its super type
         String resourceSuperType = null;
-        if ( rtPath != null ) {
+        if (rtPath != null) {
             final Resource rtResource = getResource(rtPath);
             if (rtResource != null) {
                 resourceSuperType = rtResource.getResourceSuperType();
@@ -478,10 +485,10 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     @SuppressWarnings("null")
     public @NotNull Iterator<Resource> findResources(final @NotNull String query, final String language) {
         return options.getFindResourcesHandlers().stream()
-            .map(handler -> handler.findResources(query, language))
-            .filter(Objects::nonNull)
-            .findFirst()
-            .orElse(Collections.emptyIterator());
+                .map(handler -> handler.findResources(query, language))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(Collections.emptyIterator());
     }
 
     /**
@@ -560,11 +567,8 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     // Sling API 2.24.0
-    public boolean orderBefore(@NotNull Resource parent, @NotNull String name,
-            @Nullable String followingSiblingName) throws UnsupportedOperationException, PersistenceException, IllegalArgumentException {
+    public boolean orderBefore(@NotNull Resource parent, @NotNull String name, @Nullable String followingSiblingName)
+            throws UnsupportedOperationException, PersistenceException, IllegalArgumentException {
         throw new UnsupportedOperationException();
     }
-
-
-
 }

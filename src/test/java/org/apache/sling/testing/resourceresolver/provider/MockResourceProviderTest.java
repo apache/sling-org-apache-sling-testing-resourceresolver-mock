@@ -18,8 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver.provider;
 
-import static org.junit.Assert.assertFalse;
-
 import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
@@ -31,6 +29,8 @@ import org.apache.sling.testing.resourceresolver.MockResourceResolver;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
 
 public class MockResourceProviderTest {
 
@@ -50,7 +50,8 @@ public class MockResourceProviderTest {
 
     @Test
     public void testResourceResolverFromResource() {
-        assertFalse("testRoot.resourceResolver is not MockResourceResolver",
+        assertFalse(
+                "testRoot.resourceResolver is not MockResourceResolver",
                 testRoot.getResourceResolver() instanceof MockResourceResolver);
     }
 
@@ -62,10 +63,9 @@ public class MockResourceProviderTest {
         Iterator<Resource> children = testRoot.listChildren();
         while (children.hasNext()) {
             Resource child = children.next();
-            assertFalse("testRoot.resourceResolver is not MockResourceResolver",
+            assertFalse(
+                    "testRoot.resourceResolver is not MockResourceResolver",
                     child.getResourceResolver() instanceof MockResourceResolver);
         }
     }
-
-
 }

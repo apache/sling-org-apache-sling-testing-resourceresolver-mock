@@ -36,6 +36,6 @@ public interface MockFindResourcesHandler {
      * @param language Language
      * @return Returns a non-null value if a mocked result is available
      */
-    @Nullable Iterator<Resource> findResources(final @NotNull String query, final String language);
-
+    @Nullable
+    Iterator<Resource> findResources(final @NotNull String query, final String language);
 }

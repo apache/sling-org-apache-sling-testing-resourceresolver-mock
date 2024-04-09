@@ -55,7 +55,7 @@ public class MockResourceResolverFactoryOptions {
     }
 
     public @NotNull MockResourceResolverFactoryOptions setSearchPaths(@NotNull String @Nullable [] searchPaths) {
-        if ( searchPaths == null ) {
+        if (searchPaths == null) {
             searchPaths = new String[] {};
         }
         this.searchPaths = searchPaths;
@@ -98,5 +98,4 @@ public class MockResourceResolverFactoryOptions {
     public @NotNull List<MockQueryResourceHandler> getQueryResourcesHandlers() {
         return queryResourcesHandlers;
     }
-
 }

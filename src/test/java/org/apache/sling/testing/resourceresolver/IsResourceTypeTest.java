@@ -18,9 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +30,8 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class IsResourceTypeTest {
 
@@ -104,7 +103,7 @@ public class IsResourceTypeTest {
         assertTrue(resolver.isResourceType(resourceT3, "/libs/types/3"));
     }
 
-    @Test(expected=SlingException.class)
+    @Test(expected = SlingException.class)
     public void testIsResourceCyclicHierarchyDirect() {
         /**
          * prepare resource type hierarchy
@@ -123,7 +122,7 @@ public class IsResourceTypeTest {
         resolver.isResourceType(resource, "/types/unknown");
     }
 
-    @Test(expected=SlingException.class)
+    @Test(expected = SlingException.class)
     public void testIsResourceCyclicHierarchyIndirect() {
         /**
          * prepare resource type hierarchy
@@ -157,10 +156,8 @@ public class IsResourceTypeTest {
                 props.put("sling:resourceSuperType", resourceSuperType);
             }
             return ResourceUtil.getOrCreateResource(resolver, path, props, null, true);
-        }
-        catch (PersistenceException ex) {
+        } catch (PersistenceException ex) {
             throw new RuntimeException(ex);
         }
     }
-
 }

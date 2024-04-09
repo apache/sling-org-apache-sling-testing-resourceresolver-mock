@@ -38,7 +38,8 @@ class ResourceTypeUtil {
      * @return <code>true</code> if the resource type equals the given resource type.
      */
     public static boolean areResourceTypesEqual(String resourceType, String anotherResourceType, String[] searchPath) {
-        return relativizeResourceType(resourceType, searchPath).equals(relativizeResourceType(anotherResourceType, searchPath));
+        return relativizeResourceType(resourceType, searchPath)
+                .equals(relativizeResourceType(anotherResourceType, searchPath));
     }
 
     /**
@@ -58,5 +59,4 @@ class ResourceTypeUtil {
         }
         return resourceType;
     }
-
 }

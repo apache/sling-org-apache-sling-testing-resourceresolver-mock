@@ -36,5 +36,4 @@ public class SlingCrudResourceResolverTestResourceProviderTest extends SlingCrud
         context.registerInjectActivateService(MockResourceProvider.class);
         return context.resourceResolver();
     }
-
 }

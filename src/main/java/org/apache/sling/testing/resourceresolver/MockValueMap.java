@@ -50,7 +50,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
         this(resource, new HashMap<>());
     }
 
-    public MockValueMap(Resource resource, Map<String,Object> map) {
+    public MockValueMap(Resource resource, Map<String, Object> map) {
         super(resource, new ValueMapDecorator(convertForWriteAll(map)));
         this.resource = resource;
         this.mockResourceResolver = getMockResourceResolver(resource);
@@ -59,28 +59,25 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
     private static MockResourceResolver getMockResourceResolver(Resource resource) {
         ResourceResolver resolver = resource.getResourceResolver();
         if (resolver instanceof MockResourceResolver) {
-            return (MockResourceResolver)resolver;
-        }
-        else {
+            return (MockResourceResolver) resolver;
+        } else {
             return null;
         }
     }
 
-    @SuppressWarnings({ "unchecked", "null", "unused" })
+    @SuppressWarnings({"unchecked", "null", "unused"})
     @Override
     public <T> T get(String name, Class<T> type) {
 
         if (type == InputStream.class) {
             // Support conversion from byte array to InputStream
             byte[] data = get(name, byte[].class);
-            if (data!=null) {
-                return (T)new ByteArrayInputStream(data);
-            }
-            else {
+            if (data != null) {
+                return (T) new ByteArrayInputStream(data);
+            } else {
                 return null;
             }
-        }
-        else if ( type == null ) {
+        } else if (type == null) {
             return (T) super.get(name);
         }
         return super.get(name, type);
@@ -96,7 +93,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
     @Override
     public void putAll(Map<? extends String, ?> map) {
         markResourceAsChanged();
-        super.putAll(convertForWriteAll((Map<String, Object>)map));
+        super.putAll(convertForWriteAll((Map<String, Object>) map));
     }
 
     @Override
@@ -115,13 +112,12 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
         if (value instanceof Date) {
             // Store Date values as Calendar values
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime((Date)value);
+            calendar.setTime((Date) value);
             value = calendar;
-        }
-        else if (value instanceof InputStream) {
+        } else if (value instanceof InputStream) {
             // Store InputStream values as byte array
             try {
-                value = IOUtils.toByteArray((InputStream)value);
+                value = IOUtils.toByteArray((InputStream) value);
             } catch (IOException ex) {
                 throw new RuntimeException("Unable to convert input stream to byte array.");
             }
@@ -130,7 +126,7 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
     }
 
     private static Map<String, Object> convertForWriteAll(Map<String, Object> map) {
-        Map<String,Object> newMap = new HashMap<String, Object>();
+        Map<String, Object> newMap = new HashMap<String, Object>();
         if (map != null) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 newMap.put(entry.getKey(), convertForWrite(entry.getValue()));
@@ -147,5 +143,4 @@ public class MockValueMap extends DeepReadModifiableValueMapDecorator implements
             this.mockResourceResolver.addChanged(resource.getPath(), this);
         }
     }
-
 }

@@ -18,11 +18,11 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Map;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class NamespaceManglerTest {
 
@@ -44,5 +44,4 @@ public class NamespaceManglerTest {
             assertEquals(entry.getKey(), NamespaceMangler.unmangleNamespaces(entry.getValue()));
         }
     }
-
 }

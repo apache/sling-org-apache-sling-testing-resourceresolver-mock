@@ -47,20 +47,17 @@ public class MockResource extends AbstractResource {
     static final String NT_FILE = "nt:file";
     static final String NT_UNSTRUCTURED = "nt:unstructured";
 
-    public MockResource(final String path,
-            final Map<String, Object> props,
-            final ResourceResolver resolver) {
+    public MockResource(final String path, final Map<String, Object> props, final ResourceResolver resolver) {
         this.resolver = resolver;
         this.path = path;
         this.rm = new ResourceMetadata();
         this.rm.setResolutionPath(path);
         if (props instanceof MockValueMap) {
-            this.props = (MockValueMap)props;
-        }
-        else if (props instanceof ReadonlyValueMapDecorator &&  ((ReadonlyValueMapDecorator)props).getDelegate() instanceof MockValueMap) {
-            this.props = ((ReadonlyValueMapDecorator)props).getDelegate();
-        }
-        else {
+            this.props = (MockValueMap) props;
+        } else if (props instanceof ReadonlyValueMapDecorator
+                && ((ReadonlyValueMapDecorator) props).getDelegate() instanceof MockValueMap) {
+            this.props = ((ReadonlyValueMapDecorator) props).getDelegate();
+        } else {
             this.props = new MockValueMap(this, props);
         }
     }
@@ -107,18 +104,16 @@ public class MockResource extends AbstractResource {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "null" })
+    @SuppressWarnings({"unchecked", "null"})
     public <AdapterType> AdapterType adaptTo(final Class<AdapterType> type) {
-        if ( type == ValueMap.class || type == Map.class ) {
-            return (AdapterType)new ReadonlyValueMapDecorator(this.props);
-        }
-        else if ( type == ModifiableValueMap.class ) {
-            return (AdapterType)this.props;
-        }
-        else if ( type == InputStream.class ) {
+        if (type == ValueMap.class || type == Map.class) {
+            return (AdapterType) new ReadonlyValueMapDecorator(this.props);
+        } else if (type == ModifiableValueMap.class) {
+            return (AdapterType) this.props;
+        } else if (type == InputStream.class) {
             InputStream is = getFileResourceInputStream();
             if (is != null) {
-                return (AdapterType)is;
+                return (AdapterType) is;
             }
         }
         return super.adaptTo(type);
@@ -132,8 +127,7 @@ public class MockResource extends AbstractResource {
         String resourceType = getResourceType();
         if (NT_RESOURCE.equals(resourceType)) {
             return getValueMap().get(JCR_DATA, InputStream.class);
-        }
-        else if (NT_FILE.equals(resourceType)) {
+        } else if (NT_FILE.equals(resourceType)) {
             Resource contentResource = getChild(JCR_CONTENT);
             if (contentResource != null) {
                 return ResourceUtil.getValueMap(contentResource).get(JCR_DATA, InputStream.class);
@@ -160,5 +154,4 @@ public class MockResource extends AbstractResource {
     Resource forResourceProvider(ResourceResolver resourceResolver) {
         return new MockResource(this.path, this.props, this.rm, resourceResolver);
     }
-
 }

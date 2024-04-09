@@ -37,7 +37,7 @@ import org.osgi.service.event.EventAdmin;
  */
 public class MockResourceResolverFactory implements ResourceResolverFactory {
 
-    private static final String ROOT_PRIMARY_TYPE="rep:root";
+    private static final String ROOT_PRIMARY_TYPE = "rep:root";
 
     /** We use a linked hash map to preserve creation order. */
     private final Map<String, Map<String, Object>> resources = new LinkedHashMap<String, Map<String, Object>>();
@@ -65,24 +65,24 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
      */
     public MockResourceResolverFactory(@NotNull final MockResourceResolverFactoryOptions options) {
         this.options = options;
-        Map<String, Object> props= new HashMap<String,Object>();
+        Map<String, Object> props = new HashMap<String, Object>();
         props.put(MockResource.JCR_PRIMARYTYPE, ROOT_PRIMARY_TYPE);
         resources.put("/", props);
     }
 
     @Override
-    public @NotNull ResourceResolver getResourceResolver(
-            final Map<String, Object> authenticationInfo) throws LoginException {
+    public @NotNull ResourceResolver getResourceResolver(final Map<String, Object> authenticationInfo)
+            throws LoginException {
 
         // put user name in resolver attributes
-        Map<String,Object> attributes = new HashMap<String, Object>();
-        if (authenticationInfo!=null) {
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        if (authenticationInfo != null) {
             attributes.put(ResourceResolverFactory.USER, authenticationInfo.get(ResourceResolverFactory.USER));
         }
 
         final ResourceResolver result = new MockResourceResolver(options, this, resources, attributes);
         Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
-        if ( resolverStack == null ) {
+        if (resolverStack == null) {
             resolverStack = new Stack<ResourceResolver>();
             resolverStackHolder.set(resolverStack);
         }
@@ -91,14 +91,14 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     }
 
     @Override
-    public @NotNull ResourceResolver getAdministrativeResourceResolver(
-            final Map<String, Object> authenticationInfo) throws LoginException {
+    public @NotNull ResourceResolver getAdministrativeResourceResolver(final Map<String, Object> authenticationInfo)
+            throws LoginException {
         return new MockResourceResolver(options, this, resources);
     }
 
     @Override
-    public @NotNull ResourceResolver getServiceResourceResolver(
-            Map<String, Object> authenticationInfo) throws LoginException {
+    public @NotNull ResourceResolver getServiceResourceResolver(Map<String, Object> authenticationInfo)
+            throws LoginException {
         return new MockResourceResolver(options, this, resources);
     }
 
@@ -111,7 +111,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     public ResourceResolver getThreadResourceResolver() {
         ResourceResolver result = null;
         final Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
-        if ( resolverStack != null && !resolverStack.isEmpty() ) {
+        if (resolverStack != null && !resolverStack.isEmpty()) {
             result = resolverStack.peek();
         }
         return result;
@@ -124,7 +124,7 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
      */
     public void closed(@NotNull final ResourceResolver resolver) {
         final Stack<ResourceResolver> resolverStack = resolverStackHolder.get();
-        if ( resolverStack != null ) {
+        if (resolverStack != null) {
             resolverStack.remove(resolver);
         }
     }
@@ -133,5 +133,4 @@ public class MockResourceResolverFactory implements ResourceResolverFactory {
     public @NotNull List<String> getSearchPath() {
         return Arrays.asList(this.options.getSearchPaths());
     }
-
 }

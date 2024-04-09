@@ -36,5 +36,4 @@ public class IsResourceTypeTestResourceProviderTest extends IsResourceTypeTest {
         context.registerInjectActivateService(MockResourceProvider.class);
         return context.resourceResolver();
     }
-
 }

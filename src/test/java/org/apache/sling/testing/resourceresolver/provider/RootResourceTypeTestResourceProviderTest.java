@@ -36,5 +36,4 @@ public class RootResourceTypeTestResourceProviderTest extends RootResourceTypeTe
         context.registerInjectActivateService(MockResourceProvider.class);
         return context.resourceResolver();
     }
-
 }

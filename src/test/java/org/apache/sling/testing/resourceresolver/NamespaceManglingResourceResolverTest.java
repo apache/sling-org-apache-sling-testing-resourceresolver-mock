@@ -18,14 +18,14 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class NamespaceManglingResourceResolverTest {
 
@@ -51,7 +51,8 @@ public class NamespaceManglingResourceResolverTest {
 
     @Test
     public void testResolve() {
-        assertEquals("/res1/jcr:content/res2", resolver.resolve("/res1/_jcr_content/res2").getPath());
+        assertEquals(
+                "/res1/jcr:content/res2",
+                resolver.resolve("/res1/_jcr_content/res2").getPath());
     }
-
 }
