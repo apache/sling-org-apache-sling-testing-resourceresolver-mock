@@ -32,17 +32,20 @@ public class FindQueryResourcesResourceResolverFactoryOptionsTest extends FindQu
     public SlingContext context = new SlingContext(ResourceResolverType.NONE);
 
     @Override
-    protected ResourceResolver createResourceResolver_addFindResourceHandlers(MockFindResourcesHandler... handlers) throws LoginException {
+    protected ResourceResolver createResourceResolver_addFindResourceHandlers(MockFindResourcesHandler... handlers)
+            throws LoginException {
         // set handler on other resource resolver created in setUp
-        Arrays.stream(handlers).forEach(handler -> MockFindQueryResources.addFindResourceHandler(resourceResolver, handler));
+        Arrays.stream(handlers)
+                .forEach(handler -> MockFindQueryResources.addFindResourceHandler(resourceResolver, handler));
         return createResourceResolver();
     }
 
     @Override
-    protected ResourceResolver createResourceResolver_addQueryResourceHandlers(MockQueryResourceHandler... handlers) throws LoginException {
+    protected ResourceResolver createResourceResolver_addQueryResourceHandlers(MockQueryResourceHandler... handlers)
+            throws LoginException {
         // set handler on other resource resolver created in setUp
-        Arrays.stream(handlers).forEach(handler -> MockFindQueryResources.addQueryResourceHandler(resourceResolver, handler));
+        Arrays.stream(handlers)
+                .forEach(handler -> MockFindQueryResources.addQueryResourceHandler(resourceResolver, handler));
         return createResourceResolver();
     }
-
 }

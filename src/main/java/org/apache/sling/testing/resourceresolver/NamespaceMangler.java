@@ -76,5 +76,4 @@ final class NamespaceMangler {
         matcher.appendTail(sb);
         return sb.toString();
     }
-
 }

@@ -18,10 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.util.Map;
 
 import org.apache.sling.api.resource.LoginException;
@@ -30,13 +26,16 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 /**
  * Test different variants of login for resource resolver.
  */
 public class ResourceResolverLoginTest {
 
-    private static final Map<String,Object> AUTH_INFO = Map.<String, Object>of(
-                ResourceResolverFactory.USER, "myUser");
+    private static final Map<String, Object> AUTH_INFO = Map.<String, Object>of(ResourceResolverFactory.USER, "myUser");
 
     private MockResourceResolverFactory factory;
 
@@ -86,5 +85,4 @@ public class ResourceResolverLoginTest {
         assertNotNull(resolver);
         assertNull(resolver.getAttribute(ResourceResolverFactory.USER));
     }
-
 }

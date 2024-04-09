@@ -18,20 +18,21 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.Closeable;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 public class PropertyMapTest {
 
-    @Test 
+    @Test
     public void testGetPropertyMap() throws Exception {
         // not having a map must not change the behavior
-        MockResourceResolver resolver = (MockResourceResolver) new MockResourceResolverFactory().getResourceResolver(null);
+        MockResourceResolver resolver =
+                (MockResourceResolver) new MockResourceResolverFactory().getResourceResolver(null);
         resolver.close(); // must not throw an exception
 
         // use the propertyMap
@@ -46,7 +47,7 @@ public class PropertyMapTest {
         Closeable valueWithException = Mockito.spy(new Closeable() {
             @Override
             public void close() {
-                throw new RuntimeException ("RuntimeExceptions in close must be handled");
+                throw new RuntimeException("RuntimeExceptions in close must be handled");
             }
         });
         assertNotNull(resolver.getPropertyMap());
@@ -57,9 +58,7 @@ public class PropertyMapTest {
         resolver.close();
         assertNotNull(resolver.getPropertyMap());
         assertTrue(resolver.getPropertyMap().isEmpty());
-        Mockito.verify(value2,Mockito.times(1)).close();
-        Mockito.verify(valueWithException,Mockito.times(1)).close();
-
+        Mockito.verify(value2, Mockito.times(1)).close();
+        Mockito.verify(valueWithException, Mockito.times(1)).close();
     }
-    
 }

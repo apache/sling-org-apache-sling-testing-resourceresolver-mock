@@ -40,7 +40,8 @@ public final class MockFindQueryResources {
      * @param handler Handler
      * @throws IllegalStateException If the given resource resolver is not based on resourceresolver-mock
      */
-    public static void addFindResourceHandler(@NotNull ResourceResolver resourceResolver, @NotNull MockFindResourcesHandler handler) {
+    public static void addFindResourceHandler(
+            @NotNull ResourceResolver resourceResolver, @NotNull MockFindResourcesHandler handler) {
         toMockResourceResolver(resourceResolver).addFindResourceHandlerInternal(handler);
     }
 
@@ -53,16 +54,16 @@ public final class MockFindQueryResources {
      * @param handler Handler
      * @throws IllegalStateException If the given resource resolver is not based on resourceresolver-mock
      */
-    public static void addQueryResourceHandler(@NotNull ResourceResolver resourceResolver, @NotNull MockQueryResourceHandler handler) {
+    public static void addQueryResourceHandler(
+            @NotNull ResourceResolver resourceResolver, @NotNull MockQueryResourceHandler handler) {
         toMockResourceResolver(resourceResolver).addQueryResourceHandlerInternal(handler);
     }
 
     private static @NotNull MockResourceResolver toMockResourceResolver(@NotNull ResourceResolver resourceResolver) {
         MockResourceResolver mockResourceResolver = null;
         if (resourceResolver instanceof MockResourceResolver) {
-            mockResourceResolver = (MockResourceResolver)resourceResolver;
-        }
-        else {
+            mockResourceResolver = (MockResourceResolver) resourceResolver;
+        } else {
             mockResourceResolver = resourceResolver.adaptTo(MockResourceResolver.class);
         }
         if (mockResourceResolver == null) {
@@ -70,5 +71,4 @@ public final class MockFindQueryResources {
         }
         return mockResourceResolver;
     }
-
 }

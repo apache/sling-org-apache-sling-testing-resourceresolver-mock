@@ -36,5 +36,4 @@ public class CreateDeleteResourceResolverResourceProviderTest extends CreateDele
         context.registerInjectActivateService(MockResourceProvider.class);
         return context.resourceResolver();
     }
-
 }

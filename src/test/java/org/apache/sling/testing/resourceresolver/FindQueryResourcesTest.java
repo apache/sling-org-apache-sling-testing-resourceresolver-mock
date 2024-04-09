@@ -18,10 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static javax.jcr.query.Query.JCR_SQL2;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +37,10 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import static javax.jcr.query.Query.JCR_SQL2;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 /**
  * Tests finding/querying for resources.
  */
@@ -57,9 +57,11 @@ public class FindQueryResourcesTest {
         resourceResolver = createResourceResolver();
 
         MockHelper.create(resourceResolver)
-            .resource("/resource1").p("prop1", "value1")
-            .resource("/resource2").p("prop1", "value2")
-            .commit();
+                .resource("/resource1")
+                .p("prop1", "value1")
+                .resource("/resource2")
+                .p("prop1", "value2")
+                .commit();
         resource1 = resourceResolver.getResource("/resource1");
         resource2 = resourceResolver.getResource("/resource2");
         resourceResolver.commit();
@@ -69,17 +71,21 @@ public class FindQueryResourcesTest {
         return resourceResolverFactory.getResourceResolver(null);
     }
 
-    protected ResourceResolver createResourceResolver_addFindResourceHandlers(MockFindResourcesHandler... handlers) throws LoginException {
+    protected ResourceResolver createResourceResolver_addFindResourceHandlers(MockFindResourcesHandler... handlers)
+            throws LoginException {
         // set handler directly on newly created resource resolver
         ResourceResolver resourceResolver = createResourceResolver();
-        Arrays.stream(handlers).forEach(handler -> MockFindQueryResources.addFindResourceHandler(resourceResolver, handler));
+        Arrays.stream(handlers)
+                .forEach(handler -> MockFindQueryResources.addFindResourceHandler(resourceResolver, handler));
         return resourceResolver;
     }
 
-    protected ResourceResolver createResourceResolver_addQueryResourceHandlers(MockQueryResourceHandler... handlers) throws LoginException {
+    protected ResourceResolver createResourceResolver_addQueryResourceHandlers(MockQueryResourceHandler... handlers)
+            throws LoginException {
         // set handler directly on newly created resource resolver
         ResourceResolver resourceResolver = createResourceResolver();
-        Arrays.stream(handlers).forEach(handler -> MockFindQueryResources.addQueryResourceHandler(resourceResolver, handler));
+        Arrays.stream(handlers)
+                .forEach(handler -> MockFindQueryResources.addQueryResourceHandler(resourceResolver, handler));
         return resourceResolver;
     }
 
@@ -93,8 +99,8 @@ public class FindQueryResourcesTest {
     @Test
     public void testFindResourcesSingleHandler() throws Exception {
         List<Resource> expected = List.of(resource1, resource2);
-        ResourceResolver resourceResolver = createResourceResolver_addFindResourceHandlers(
-                (query, language) -> expected.iterator());
+        ResourceResolver resourceResolver =
+                createResourceResolver_addFindResourceHandlers((query, language) -> expected.iterator());
 
         assertResources(expected, resourceResolver.findResources("any-query", JCR_SQL2));
     }
@@ -115,24 +121,24 @@ public class FindQueryResourcesTest {
     @Test
     public void testQueryResourcesNoHandler() throws Exception {
         ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers();
-        Iterator<Map<String,Object>> result = resourceResolver.queryResources("any-query", JCR_SQL2);
+        Iterator<Map<String, Object>> result = resourceResolver.queryResources("any-query", JCR_SQL2);
         assertFalse(result.hasNext());
     }
 
     @Test
     public void testQueryResourcesSingleHandler() throws Exception {
-        List<Map<String,Object>> expected = List.of(resource1.getValueMap(), resource2.getValueMap());
-        ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers(
-                (query, language) -> expected.iterator());
+        List<Map<String, Object>> expected = List.of(resource1.getValueMap(), resource2.getValueMap());
+        ResourceResolver resourceResolver =
+                createResourceResolver_addQueryResourceHandlers((query, language) -> expected.iterator());
 
         assertEquals(expected, IteratorUtils.toList(resourceResolver.queryResources("any-query", JCR_SQL2)));
     }
 
     @Test
     public void testQueryResourcesMultipleHandlers() throws Exception {
-        List<Map<String,Object>> expected1 = List.of(resource1.getValueMap());
+        List<Map<String, Object>> expected1 = List.of(resource1.getValueMap());
 
-        List<Map<String,Object>> expected2 = List.of(resource2.getValueMap());
+        List<Map<String, Object>> expected2 = List.of(resource2.getValueMap());
         ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers(
                 (query, language) -> StringUtils.equals(query, "q1") ? expected1.iterator() : null,
                 (query, language) -> StringUtils.equals(query, "q2") ? expected2.iterator() : null);
@@ -142,11 +148,11 @@ public class FindQueryResourcesTest {
     }
 
     private void assertResources(List<Resource> expected, Iterator<Resource> actual) {
-        Map<String,ValueMap> expectedData = expected.stream()
-                .collect(Collectors.toMap(Resource::getPath, Resource::getValueMap));
-        Map<String,ValueMap> actualData = StreamSupport.stream(Spliterators.spliteratorUnknownSize(actual, Spliterator.ORDERED), false)
+        Map<String, ValueMap> expectedData =
+                expected.stream().collect(Collectors.toMap(Resource::getPath, Resource::getValueMap));
+        Map<String, ValueMap> actualData = StreamSupport.stream(
+                        Spliterators.spliteratorUnknownSize(actual, Spliterator.ORDERED), false)
                 .collect(Collectors.toMap(Resource::getPath, Resource::getValueMap));
         assertEquals(expectedData, actualData);
     }
-
 }

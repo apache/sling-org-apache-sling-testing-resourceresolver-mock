@@ -18,9 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -31,6 +28,9 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test different ValueMap variants.
@@ -48,9 +48,7 @@ public class ValueMapTest {
         Resource root = resourceResolver.getResource("/");
         testRoot = resourceResolver.create(root, "test", ValueMap.EMPTY);
 
-        resourceResolver.create(testRoot, "node1",
-            Map.<String, Object>of(
-                "prop1", "value1"));
+        resourceResolver.create(testRoot, "node1", Map.<String, Object>of("prop1", "value1"));
     }
 
     protected ResourceResolver createResourceResolver() throws LoginException {
@@ -105,5 +103,4 @@ public class ValueMapTest {
         assertEquals("value1", map.get("prop1"));
         map.put("prop1", "value2");
     }
-
 }

@@ -36,5 +36,4 @@ public class FindQueryResourcesTestResourceProviderTest extends FindQueryResourc
         context.registerInjectActivateService(MockResourceProvider.class);
         return context.resourceResolver();
     }
-
 }

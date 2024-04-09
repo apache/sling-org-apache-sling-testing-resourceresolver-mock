@@ -36,6 +36,6 @@ public interface MockQueryResourceHandler {
      * @param language Language
      * @return Returns a non-null value if a mocked result is available
      */
-    @Nullable Iterator<Map<String, Object>> queryResources(@NotNull String query, String language);
-
+    @Nullable
+    Iterator<Map<String, Object>> queryResources(@NotNull String query, String language);
 }

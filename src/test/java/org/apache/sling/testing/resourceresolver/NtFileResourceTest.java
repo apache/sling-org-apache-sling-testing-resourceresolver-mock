@@ -18,14 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.apache.sling.testing.resourceresolver.MockResource.JCR_CONTENT;
-import static org.apache.sling.testing.resourceresolver.MockResource.JCR_DATA;
-import static org.apache.sling.testing.resourceresolver.MockResource.JCR_PRIMARYTYPE;
-import static org.apache.sling.testing.resourceresolver.MockResource.NT_FILE;
-import static org.apache.sling.testing.resourceresolver.MockResource.NT_RESOURCE;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +31,14 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.sling.testing.resourceresolver.MockResource.JCR_CONTENT;
+import static org.apache.sling.testing.resourceresolver.MockResource.JCR_DATA;
+import static org.apache.sling.testing.resourceresolver.MockResource.JCR_PRIMARYTYPE;
+import static org.apache.sling.testing.resourceresolver.MockResource.NT_FILE;
+import static org.apache.sling.testing.resourceresolver.MockResource.NT_RESOURCE;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Implements simple write and read resource and values test.
  * Sling CRUD API is used to create the test data.
@@ -46,7 +46,7 @@ import org.junit.Test;
 @SuppressWarnings("null")
 public class NtFileResourceTest {
 
-    private static final byte[] BINARY_VALUE = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+    private static final byte[] BINARY_VALUE = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
 
     private ResourceResolver resourceResolver;
     private Resource testRoot;
@@ -64,11 +64,11 @@ public class NtFileResourceTest {
 
     @Test
     public void testNtFile() throws IOException {
-        Resource file = resourceResolver.create(testRoot, "ntFile", Map.<String, Object>of(
-                JCR_PRIMARYTYPE, NT_FILE));
-        resourceResolver.create(file, JCR_CONTENT, Map.<String, Object>of(
-            JCR_PRIMARYTYPE, NT_RESOURCE,
-            JCR_DATA, new ByteArrayInputStream(BINARY_VALUE)));
+        Resource file = resourceResolver.create(testRoot, "ntFile", Map.<String, Object>of(JCR_PRIMARYTYPE, NT_FILE));
+        resourceResolver.create(
+                file,
+                JCR_CONTENT,
+                Map.<String, Object>of(JCR_PRIMARYTYPE, NT_RESOURCE, JCR_DATA, new ByteArrayInputStream(BINARY_VALUE)));
 
         String path = testRoot.getPath() + "/ntFile";
         Resource resource = resourceResolver.getResource(path);
@@ -81,9 +81,10 @@ public class NtFileResourceTest {
 
     @Test
     public void testNtResource() throws IOException {
-        resourceResolver.create(testRoot, "ntResource", Map.<String, Object>of(
-                JCR_PRIMARYTYPE, NT_RESOURCE,
-                JCR_DATA, new ByteArrayInputStream(BINARY_VALUE)));
+        resourceResolver.create(
+                testRoot,
+                "ntResource",
+                Map.<String, Object>of(JCR_PRIMARYTYPE, NT_RESOURCE, JCR_DATA, new ByteArrayInputStream(BINARY_VALUE)));
 
         String path = testRoot.getPath() + "/ntResource";
         Resource resource = resourceResolver.getResource(path);
@@ -93,5 +94,4 @@ public class NtFileResourceTest {
         assertArrayEquals(BINARY_VALUE, IOUtils.toByteArray(is));
         is.close();
     }
-
 }

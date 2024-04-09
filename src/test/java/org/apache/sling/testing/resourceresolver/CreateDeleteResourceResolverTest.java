@@ -18,9 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Map;
 
 import org.apache.sling.api.resource.LoginException;
@@ -32,15 +29,16 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 /**
  * Tests combinations of create and deletion of resources and conflict detection.
  */
 public class CreateDeleteResourceResolverTest {
 
-    private static final Map<String,Object> PROPS1 = Map.<String, Object>of(
-            "prop1", "value1");
-    private static final Map<String,Object> PROPS2 = Map.<String, Object>of(
-            "prop2", "value2");
+    private static final Map<String, Object> PROPS1 = Map.<String, Object>of("prop1", "value1");
+    private static final Map<String, Object> PROPS2 = Map.<String, Object>of("prop2", "value2");
 
     private ResourceResolver resourceResolver;
     private Resource testRoot;
@@ -123,17 +121,16 @@ public class CreateDeleteResourceResolverTest {
         resourceResolver.commit();
     }
 
-    @Test(expected=PersistenceException.class)
+    @Test(expected = PersistenceException.class)
     public void testCreatePathAlreadyExists() throws PersistenceException {
         resourceResolver.create(testRoot, "node", PROPS1);
         resourceResolver.create(testRoot, "node", PROPS2);
     }
 
-    @Test(expected=PersistenceException.class)
+    @Test(expected = PersistenceException.class)
     public void testCreateCommitPathAlreadyExists() throws PersistenceException {
         resourceResolver.create(testRoot, "node", PROPS1);
         resourceResolver.commit();
         resourceResolver.create(testRoot, "node", PROPS2);
     }
-
 }

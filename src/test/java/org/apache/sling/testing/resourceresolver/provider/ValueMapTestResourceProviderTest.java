@@ -36,5 +36,4 @@ public class ValueMapTestResourceProviderTest extends ValueMapTest {
         context.registerInjectActivateService(MockResourceProvider.class);
         return context.resourceResolver();
     }
-
 }

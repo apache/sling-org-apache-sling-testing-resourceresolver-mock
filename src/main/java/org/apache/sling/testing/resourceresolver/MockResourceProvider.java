@@ -45,14 +45,16 @@ import org.osgi.service.event.EventAdmin;
  * This is a wrapper around {@link MockResourceResolver} to act as resource provider.
  * All resources returned by this provider return the resolver from the resolve context instead of the {@link MockResourceResolver}.
  */
-@Component(service = ResourceProvider.class, property = {
-        ResourceProvider.PROPERTY_NAME + "=MockResourceProvider",
-        ResourceProvider.PROPERTY_ROOT + "=/",
-        ResourceProvider.PROPERTY_MODIFIABLE + ":Boolean=true",
-        ResourceProvider.PROPERTY_ADAPTABLE + ":Boolean=true",
-        // although we do not really support authentication, it's required for a modifiable resource provider
-        ResourceProvider.PROPERTY_AUTHENTICATE + "=" + ResourceProvider.AUTHENTICATE_REQUIRED
-})
+@Component(
+        service = ResourceProvider.class,
+        property = {
+            ResourceProvider.PROPERTY_NAME + "=MockResourceProvider",
+            ResourceProvider.PROPERTY_ROOT + "=/",
+            ResourceProvider.PROPERTY_MODIFIABLE + ":Boolean=true",
+            ResourceProvider.PROPERTY_ADAPTABLE + ":Boolean=true",
+            // although we do not really support authentication, it's required for a modifiable resource provider
+            ResourceProvider.PROPERTY_AUTHENTICATE + "=" + ResourceProvider.AUTHENTICATE_REQUIRED
+        })
 public final class MockResourceProvider extends ResourceProvider<Void> {
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
@@ -68,31 +70,30 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
         options.setEventAdmin(eventAdmin);
         ResourceResolverFactory resourceResolverFactory = new MockResourceResolverFactory(options);
         try {
-            this.mockResourceResolver = (MockResourceResolver)resourceResolverFactory.getResourceResolver(null);
-        }
-        catch (LoginException ex) {
+            this.mockResourceResolver = (MockResourceResolver) resourceResolverFactory.getResourceResolver(null);
+        } catch (LoginException ex) {
             throw new RuntimeException(ex);
         }
         this.mockQueryLanguageProvider = new MockQueryLanguageProvider(mockResourceResolver);
     }
 
     @Override
-    public @Nullable Resource getResource(@NotNull ResolveContext<Void> ctx,
-            @NotNull String path, @NotNull ResourceContext resourceContext,
+    public @Nullable Resource getResource(
+            @NotNull ResolveContext<Void> ctx,
+            @NotNull String path,
+            @NotNull ResourceContext resourceContext,
             @Nullable Resource parent) {
         Resource resource = mockResourceResolver.getResource(path);
         if (resource != null) {
             return attachResource(ctx, resource);
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     @Override
     @SuppressWarnings("null")
-    public @Nullable Iterator<Resource> listChildren(
-            @NotNull ResolveContext<Void> ctx, @NotNull Resource parent) {
+    public @Nullable Iterator<Resource> listChildren(@NotNull ResolveContext<Void> ctx, @NotNull Resource parent) {
         Iterator<Resource> children = mockResourceResolver.listChildren(parent);
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(children, Spliterator.ORDERED), false)
                 .map(resource -> attachResource(ctx, resource))
@@ -100,8 +101,8 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
     }
 
     @Override
-    public @NotNull Resource create(@NotNull ResolveContext<Void> ctx, String path,
-            Map<String, Object> properties) throws PersistenceException {
+    public @NotNull Resource create(@NotNull ResolveContext<Void> ctx, String path, Map<String, Object> properties)
+            throws PersistenceException {
         String parentPath = ResourceUtil.getParent(path);
         String name = ResourceUtil.getName(path);
         if (parentPath == null) {
@@ -142,23 +143,21 @@ public final class MockResourceProvider extends ResourceProvider<Void> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public @Nullable <AdapterType> AdapterType adaptTo(@NotNull ResolveContext<Void> ctx, @NotNull Class<AdapterType> type) {
+    public @Nullable <AdapterType> AdapterType adaptTo(
+            @NotNull ResolveContext<Void> ctx, @NotNull Class<AdapterType> type) {
         if (type == MockResourceResolver.class) {
-            return (AdapterType)mockResourceResolver;
+            return (AdapterType) mockResourceResolver;
         }
         return super.adaptTo(ctx, type);
     }
 
     private @NotNull Resource attachResource(@NotNull ResolveContext<Void> ctx, @NotNull Resource resource) {
         if (resource instanceof MockResource) {
-            return ((MockResource)resource).forResourceProvider(ctx.getResourceResolver());
-        }
-        else if (resource instanceof MockPropertyResource) {
-            return ((MockPropertyResource)resource).forResourceProvider(ctx.getResourceResolver());
-        }
-        else {
+            return ((MockResource) resource).forResourceProvider(ctx.getResourceResolver());
+        } else if (resource instanceof MockPropertyResource) {
+            return ((MockPropertyResource) resource).forResourceProvider(ctx.getResourceResolver());
+        } else {
             return resource;
         }
     }
-
 }
