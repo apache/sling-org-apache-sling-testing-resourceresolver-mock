@@ -518,44 +518,6 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
                 .orElse(Collections.emptyIterator());
     }
 
-    /**
-     * Adds a handler that can provide a mocked query resources result. You can add multiple handlers which are called
-     * in the order they were added when calling {@link #queryResources(String, String)}.
-     * The result of the first handler that returns a non-null result is used.
-     * If no handler delivers a result, an empty result is returned.
-     * @param handler Handler
-     * @deprecated Please use {@link MockFindQueryResources#addQueryResourceHandler(ResourceResolver, MockQueryResourceHandler)}
-     */
-    @Deprecated
-    public void addQueryResourceHandler(@NotNull MockQueryResourceHandler handler) {
-        addQueryResourceHandlerInternal(handler);
-    }
-
-    void addQueryResourceHandlerInternal(@NotNull MockQueryResourceHandler handler) {
-        options.addQueryResourceHandlerInternal(handler);
-    }
-
-    // Sling API 2.24.0
-    public @NotNull Map<String, Object> getPropertyMap() {
-        if (propertyMap == null) {
-            propertyMap = new HashMap<>();
-        }
-        return propertyMap;
-    }
-
-    // --- unsupported operations ---
-
-    @Override
-    @Deprecated
-    public @NotNull Resource resolve(final @NotNull HttpServletRequest request) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public @NotNull ResourceResolver clone(Map<String, Object> authenticationInfo) throws LoginException {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public Resource copy(String srcAbsPath, String destAbsPath) throws PersistenceException {
         Resource source = getResource(srcAbsPath);
@@ -599,6 +561,44 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         Resource destination = copy(srcAbsPath, destAbsPath);
         delete(source);
         return destination;
+    }
+
+    /**
+     * Adds a handler that can provide a mocked query resources result. You can add multiple handlers which are called
+     * in the order they were added when calling {@link #queryResources(String, String)}.
+     * The result of the first handler that returns a non-null result is used.
+     * If no handler delivers a result, an empty result is returned.
+     * @param handler Handler
+     * @deprecated Please use {@link MockFindQueryResources#addQueryResourceHandler(ResourceResolver, MockQueryResourceHandler)}
+     */
+    @Deprecated
+    public void addQueryResourceHandler(@NotNull MockQueryResourceHandler handler) {
+        addQueryResourceHandlerInternal(handler);
+    }
+
+    void addQueryResourceHandlerInternal(@NotNull MockQueryResourceHandler handler) {
+        options.addQueryResourceHandlerInternal(handler);
+    }
+
+    // Sling API 2.24.0
+    public @NotNull Map<String, Object> getPropertyMap() {
+        if (propertyMap == null) {
+            propertyMap = new HashMap<>();
+        }
+        return propertyMap;
+    }
+
+    // --- unsupported operations ---
+
+    @Override
+    @Deprecated
+    public @NotNull Resource resolve(final @NotNull HttpServletRequest request) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @NotNull ResourceResolver clone(Map<String, Object> authenticationInfo) throws LoginException {
+        throw new UnsupportedOperationException();
     }
 
     // Sling API 2.24.0
