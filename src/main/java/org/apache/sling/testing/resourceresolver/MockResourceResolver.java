@@ -558,12 +558,47 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     @Override
     public Resource copy(String srcAbsPath, String destAbsPath) throws PersistenceException {
-        throw new UnsupportedOperationException();
+        Resource source = getResource(srcAbsPath);
+        if (source == null) {
+            throw new PersistenceException("Copy source does not exist");
+        }
+        Resource destinationParent = getResource(destAbsPath);
+        if (destinationParent == null) {
+            throw new PersistenceException("Copy destination does not exist");
+        }
+        if (destinationParent.getChild(source.getName()) != null) {
+            throw new PersistenceException("A resource with the same name already exists at " + destAbsPath);
+        }
+        recursivelyCreate(source, destinationParent);
+        Resource destination = getResource(destAbsPath + "/" + source.getName());
+        if (destination == null) {
+            throw new PersistenceException("Something went wrong");
+        }
+        return destination;
+    }
+
+    private void recursivelyCreate(Resource source, Resource destParent) throws PersistenceException {
+        ValueMap sourceProperties = source.getValueMap();
+        Resource target = create(destParent, source.getName(), sourceProperties);
+        Iterator<Resource> childrenIter = source.listChildren();
+        while (childrenIter.hasNext()) {
+            recursivelyCreate(childrenIter.next(), target);
+        }
     }
 
     @Override
     public Resource move(String srcAbsPath, String destAbsPath) throws PersistenceException {
-        throw new UnsupportedOperationException();
+        Resource source = getResource(srcAbsPath);
+        if (source == null) {
+            throw new PersistenceException("Move source does not exist");
+        }
+        Resource destinationParent = getResource(destAbsPath);
+        if (destinationParent == null) {
+            throw new PersistenceException("Move destination does not exist");
+        }
+        Resource destination = copy(srcAbsPath, destAbsPath);
+        delete(source);
+        return destination;
     }
 
     // Sling API 2.24.0
