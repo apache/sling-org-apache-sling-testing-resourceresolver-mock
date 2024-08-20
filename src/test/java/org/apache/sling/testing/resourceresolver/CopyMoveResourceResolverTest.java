@@ -18,15 +18,26 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.SlingConstants;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests copy and move operation on resources
@@ -106,6 +117,7 @@ public class CopyMoveResourceResolverTest {
     }
 
     @Test(expected = PersistenceException.class)
+    @SuppressWarnings("null")
     public void testFailedCopy_DestinationExists() throws PersistenceException {
         Resource testSource = resourceResolver.create(testRoot, "failed-copy-resource", ValueMap.EMPTY);
         resourceResolver.copy(testSource.getPath(), testSource.getParent().getPath());
@@ -179,6 +191,7 @@ public class CopyMoveResourceResolverTest {
     }
 
     @Test(expected = PersistenceException.class)
+    @SuppressWarnings("null")
     public void testFailedMove_DestinationExists() throws PersistenceException {
         Resource testSource = resourceResolver.create(testRoot, "failed-move-resource", ValueMap.EMPTY);
         resourceResolver.move(testSource.getPath(), testSource.getParent().getPath());
