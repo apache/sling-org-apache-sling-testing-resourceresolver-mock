@@ -99,7 +99,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     @Override
     public @NotNull Resource resolve(@NotNull HttpServletRequest request, @NotNull String absPath) {
         String path = absPath;
-        if (path == null) {
+        if (path == null) { // NOSONAR - ResourceResolver javadocs and annotation are in conflict so allow this
             path = "/";
         }
 
@@ -130,13 +130,13 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    @SuppressWarnings("null")
+    @SuppressWarnings("java:S2637")
     public @NotNull Resource resolve(final @NotNull String absPath) {
         return resolve((HttpServletRequest) null, absPath);
     }
 
     @Override
-    @SuppressWarnings("null")
+    @SuppressWarnings("java:S2637")
     public @NotNull String map(final @NotNull String resourcePath) {
         return map((HttpServletRequest) null, resourcePath);
     }
