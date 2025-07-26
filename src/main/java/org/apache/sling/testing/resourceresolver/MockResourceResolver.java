@@ -88,7 +88,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     /**
      * @deprecated use {@link #resolve(jakarta.servlet.http.HttpServletRequest, String)} instead
      */
-    @Deprecated(since = "2.0.0")
+    @Deprecated(since = "2.5.0")
     @Override
     public @NotNull Resource resolve(
             final @NotNull javax.servlet.http.HttpServletRequest request, final @NotNull String absPath) {
@@ -144,7 +144,7 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     /**
      * @deprecated use {@link #map(jakarta.servlet.http.HttpServletRequest, String)} instead
      */
-    @Deprecated(since = "2.0.0")
+    @Deprecated(since = "2.5.0")
     @Override
     public String map(
             final @NotNull javax.servlet.http.HttpServletRequest request, final @NotNull String resourcePath) {
@@ -307,9 +307,9 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private void clearPropertyMap() {
         if (propertyMap != null) {
             for (Entry<String, Object> entry : propertyMap.entrySet()) {
-                if (entry.getValue() instanceof Closeable) {
+                if (entry.getValue() instanceof Closeable c) {
                     try {
-                        ((Closeable) entry.getValue()).close();
+                        c.close();
                     } catch (Exception e) {
                         // ignore
                     }
@@ -616,8 +616,12 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     // --- unsupported operations ---
 
+    /**
+     * @deprecated as of ResourceResolver 2.0.4, use {@link #resolve(HttpServletRequest, String)}
+     *             instead.
+     */
     @Override
-    @Deprecated
+    @Deprecated(since = "1.1")
     public @NotNull Resource resolve(final @NotNull javax.servlet.http.HttpServletRequest request) {
         throw new UnsupportedOperationException();
     }
