@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -111,8 +111,8 @@ public class FindQueryResourcesTest {
         List<Resource> expected2 = List.of(resource2);
 
         ResourceResolver resourceResolver = createResourceResolver_addFindResourceHandlers(
-                (query, language) -> StringUtils.equals(query, "q1") ? expected1.iterator() : null,
-                (query, language) -> StringUtils.equals(query, "q2") ? expected2.iterator() : null);
+                (query, language) -> Strings.CS.equals(query, "q1") ? expected1.iterator() : null,
+                (query, language) -> Strings.CS.equals(query, "q2") ? expected2.iterator() : null);
 
         assertResources(expected1, resourceResolver.findResources("q1", JCR_SQL2));
         assertResources(expected2, resourceResolver.findResources("q2", JCR_SQL2));
@@ -140,8 +140,8 @@ public class FindQueryResourcesTest {
 
         List<Map<String, Object>> expected2 = List.of(resource2.getValueMap());
         ResourceResolver resourceResolver = createResourceResolver_addQueryResourceHandlers(
-                (query, language) -> StringUtils.equals(query, "q1") ? expected1.iterator() : null,
-                (query, language) -> StringUtils.equals(query, "q2") ? expected2.iterator() : null);
+                (query, language) -> Strings.CS.equals(query, "q1") ? expected1.iterator() : null,
+                (query, language) -> Strings.CS.equals(query, "q2") ? expected2.iterator() : null);
 
         assertEquals(expected1, IteratorUtils.toList(resourceResolver.queryResources("q1", JCR_SQL2)));
         assertEquals(expected2, IteratorUtils.toList(resourceResolver.queryResources("q2", JCR_SQL2)));
