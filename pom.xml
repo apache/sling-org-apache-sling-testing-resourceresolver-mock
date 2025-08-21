@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>org.apache.sling.testing.resourceresolver-mock</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
 
     <name>Apache Sling Testing Resource Resolver Mock</name>
     <description>Mock for the resource resolver / factory for easier testing.</description>
@@ -36,12 +36,12 @@
     <scm>
         <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-testing-resourceresolver-mock.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-testing-resourceresolver-mock.git</developerConnection>
-        <tag>org.apache.sling.testing.resourceresolver-mock-2.0.0</tag>
+        <tag>HEAD</tag>
         <url>https://github.com/apache/sling-org-apache-sling-testing-resourceresolver-mock.git</url>
     </scm>
 
     <properties>
-        <project.build.outputTimestamp>2025-08-21T20:32:52Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-08-21T20:33:26Z</project.build.outputTimestamp>
         <sling.java.version>17</sling.java.version>
     </properties>
 
