@@ -18,8 +18,6 @@
  */
 package org.apache.sling.testing.resourceresolver;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.adapter.SlingAdaptable;
@@ -46,6 +45,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.wrappers.JavaxToJakartaRequestWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.service.event.Event;
@@ -55,10 +55,9 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     private final Map<String, Map<String, Object>> resources;
 
-    private final Map<String, Map<String, Object>> temporaryResources =
-            new LinkedHashMap<String, Map<String, Object>>();
+    private final Map<String, Map<String, Object>> temporaryResources = new LinkedHashMap<>();
 
-    private final Set<String> deletedResources = new HashSet<String>();
+    private final Set<String> deletedResources = new HashSet<>();
 
     private final MockResourceResolverFactoryOptions options;
 
@@ -86,17 +85,30 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
         this.attributes = attributes;
     }
 
+    /**
+     * @deprecated use {@link #resolve(jakarta.servlet.http.HttpServletRequest, String)} instead
+     */
+    @Deprecated(since = "2.5.0")
     @Override
-    @SuppressWarnings("unused")
-    public @NotNull Resource resolve(final @NotNull HttpServletRequest request, final @NotNull String absPath) {
+    public @NotNull Resource resolve(
+            final @NotNull javax.servlet.http.HttpServletRequest request, final @NotNull String absPath) {
+        HttpServletRequest jakartaRequest = JavaxToJakartaRequestWrapper.toJakartaRequest(request);
+        return resolve(jakartaRequest, absPath);
+    }
+
+    @Override
+    public @NotNull Resource resolve(@NotNull HttpServletRequest request, @NotNull String absPath) {
         String path = absPath;
-        if (path == null) {
+        if (path == null) { // NOSONAR - ResourceResolver javadocs and annotation are in conflict so allow this
             path = "/";
         }
 
-        // split off query string or fragment that may be appendend to the URL
+        // split off query string or fragment that may be appended to the URL
         String urlRemainder = null;
-        int urlRemainderPos = Math.min(path.indexOf('?'), path.indexOf('#'));
+        int urlRemainderPos = path.indexOf('#');
+        if (urlRemainderPos < 0) {
+            urlRemainderPos = path.indexOf('?');
+        }
         if (urlRemainderPos >= 0) {
             urlRemainder = path.substring(urlRemainderPos);
             path = path.substring(0, urlRemainderPos);
@@ -118,24 +130,38 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     }
 
     @Override
-    @SuppressWarnings("null")
+    @SuppressWarnings("java:S2637")
     public @NotNull Resource resolve(final @NotNull String absPath) {
-        return resolve(null, absPath);
+        return resolve((HttpServletRequest) null, absPath);
     }
 
     @Override
-    @SuppressWarnings("null")
+    @SuppressWarnings("java:S2637")
     public @NotNull String map(final @NotNull String resourcePath) {
-        return map(null, resourcePath);
+        return map((HttpServletRequest) null, resourcePath);
+    }
+
+    /**
+     * @deprecated use {@link #map(jakarta.servlet.http.HttpServletRequest, String)} instead
+     */
+    @Deprecated(since = "2.5.0")
+    @Override
+    public String map(
+            final @NotNull javax.servlet.http.HttpServletRequest request, final @NotNull String resourcePath) {
+        HttpServletRequest jakartaRequest = JavaxToJakartaRequestWrapper.toJakartaRequest(request);
+        return map(jakartaRequest, resourcePath);
     }
 
     @Override
-    public String map(final @NotNull HttpServletRequest request, final @NotNull String resourcePath) {
+    public @NotNull String map(@NotNull HttpServletRequest request, @NotNull String resourcePath) {
         String path = resourcePath;
 
-        // split off query string or fragment that may be appendend to the URL
+        // split off query string or fragment that may be appended to the URL
         String urlRemainder = null;
-        int urlRemainderPos = Math.min(path.indexOf('?'), path.indexOf('#'));
+        int urlRemainderPos = path.indexOf('#');
+        if (urlRemainderPos < 0) {
+            urlRemainderPos = path.indexOf('?');
+        }
         if (urlRemainderPos >= 0) {
             urlRemainder = path.substring(urlRemainderPos);
             path = path.substring(0, urlRemainderPos);
@@ -281,9 +307,9 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
     private void clearPropertyMap() {
         if (propertyMap != null) {
             for (Entry<String, Object> entry : propertyMap.entrySet()) {
-                if (entry.getValue() instanceof Closeable) {
+                if (entry.getValue() instanceof Closeable c) {
                     try {
-                        ((Closeable) entry.getValue()).close();
+                        c.close();
                     } catch (Exception e) {
                         // ignore
                     }
@@ -590,9 +616,13 @@ public class MockResourceResolver extends SlingAdaptable implements ResourceReso
 
     // --- unsupported operations ---
 
+    /**
+     * @deprecated as of ResourceResolver 2.0.4, use {@link #resolve(HttpServletRequest, String)}
+     *             instead.
+     */
     @Override
-    @Deprecated
-    public @NotNull Resource resolve(final @NotNull HttpServletRequest request) {
+    @Deprecated(since = "1.1")
+    public @NotNull Resource resolve(final @NotNull javax.servlet.http.HttpServletRequest request) {
         throw new UnsupportedOperationException();
     }
 
